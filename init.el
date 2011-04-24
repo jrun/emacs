@@ -1,32 +1,29 @@
-;; Turn off mouse interface early in startup to avoid momentary display
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/vendor")
 
-;; Load path etc.
+(setq emacsd "~/emacs.d/")
 
-(setq dotfiles-dir (file-name-directory
-                    (or (buffer-file-name) load-file-name)))
+(load "shared/global")
+(load "shared/defuns")
+(load "shared/bindings")
+(load "shared/color-theme")
+(load "shared/shell")
+(load "shared/dired")
+(load "shared/modes")
+(load "shared/temp-files")
 
-(add-to-list 'load-path dotfiles-dir)
-
-(require 'package)
-(package-initialize)
-
-;; These should be loaded on startup rather than autoloaded on demand
-;; since they are likely to be used in every session
-
-(require 'cl)
-(require 'saveplace)
-(require 'ffap)
-(require 'uniquify)
 (require 'ansi-color)
+(require 'cl)
+(require 'ffap)
 (require 'recentf)
+(require 'saveplace)
+(require 'unbound)
+(require 'uniquify)
+(require 'whitespace)
 
-;; You can keep system- or user-specific customizations here
-(setq system-specific-config (concat dotfiles-dir system-name ".el")
-      user-specific-config (concat dotfiles-dir user-login-name ".el")
-      user-specific-dir (concat dotfiles-dir user-login-name))
+(setq system-specific-config (concat emacsd system-name ".el")
+      user-specific-config (concat emacsd user-login-name ".el")
+      user-specific-dir (concat emacsd user-login-name))
 (add-to-list 'load-path user-specific-dir)
 
 (if (file-exists-p system-specific-config) (load system-specific-config))
