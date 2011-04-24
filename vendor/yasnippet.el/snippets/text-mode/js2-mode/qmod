@@ -1,0 +1,5 @@
+#name : module("Module Name");
+# --
+module("$1");
+
+$0

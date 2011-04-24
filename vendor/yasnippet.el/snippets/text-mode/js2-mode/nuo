@@ -1,0 +1,4 @@
+#name : Nodeunit test.ok
+# --
+test.ok($1);$0
+

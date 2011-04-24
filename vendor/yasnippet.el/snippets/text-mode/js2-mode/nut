@@ -1,0 +1,6 @@
+#name : Nodeunit Test
+# --
+exports.$1 = function(test) {
+  $0                            
+  test.done();                            
+};
