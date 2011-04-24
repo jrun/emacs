@@ -7,3 +7,6 @@
 [submodule "vendor/rinari"]
 	path = vendor/rinari
 	url = https://github.com/technomancy/rinari.git
+[submodule "vendor/magit"]
+	path = vendor/magit
+	url = https://github.com/technomancy/magit.git
