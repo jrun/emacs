@@ -16,3 +16,6 @@
 [submodule "vendor/rspec-mode"]
 	path = vendor/rspec-mode
 	url = https://github.com/anildigital/rspec-mode.git
+[submodule "vendor/http-twiddle"]
+	path = vendor/http-twiddle
+	url = https://github.com/hassy/http-twiddle.git

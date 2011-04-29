@@ -1,4 +1,5 @@
 (vendor 'jump)
+(vendor 'http-twiddle)
 
 (load "shared/cucumber")
 (load "shared/javascript")
