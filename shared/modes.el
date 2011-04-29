@@ -38,3 +38,6 @@
 (add-hook 'yaml-mode-hook
     '(lambda ()
        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+; mustache
+(add-to-list 'auto-mode-alist '("\\.mustache$" . tpl-mode))
