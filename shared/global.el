@@ -37,9 +37,3 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-;; rename buffer & visited file
-(global-set-key (kbd "C-c r") 'rename-file)
-

@@ -24,3 +24,9 @@
 
 ;; Help should search more than just commands
 (global-set-key (kbd "C-h a") 'apropos)
+
+; A better buffer
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+; Rename buffer & visited file
+(global-set-key (kbd "C-c r") 'rename-file)
