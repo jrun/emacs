@@ -3,8 +3,9 @@
 
 (setq emacsd "~/emacs.d/")
 
-(load "shared/global")
+
 (load "shared/defuns")
+(load "shared/global")
 (load "shared/bindings")
 (load "shared/color-theme")
 (load "shared/shell")
