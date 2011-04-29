@@ -3,6 +3,16 @@
 
 (setq emacsd "~/.emacs.d/")
 
+(require 'ansi-color)
+(require 'cl)
+(require 'compile)
+(require 'ffap)
+(require 'ido)
+(require 'recentf)
+(require 'saveplace)
+(require 'unbound)
+(require 'uniquify)
+(require 'whitespace)
 
 (load "shared/defuns")
 (load "shared/global")
@@ -12,16 +22,6 @@
 (load "shared/dired")
 (load "shared/modes")
 (load "shared/temp-files")
-
-(require 'ansi-color)
-(require 'cl)
-(require 'ffap)
-(require 'ido)
-(require 'recentf)
-(require 'saveplace)
-(require 'unbound)
-(require 'uniquify)
-(require 'whitespace)
 
 (setq system-specific-config (concat emacsd system-name ".el")
       user-specific-config (concat emacsd user-login-name ".el")
