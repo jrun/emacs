@@ -9,26 +9,37 @@
 (prefer-coding-system 'utf-8)
 (setq-default truncate-lines t)
 
-;; save the session on exit
+; save the session on exit
 (desktop-save-mode 1)
 
-;; Transparently open compressed files
+; Transparently open compressed files
 (auto-compression-mode t)
 
-;; Enable syntax highlighting for older Emacsen that have it off
+; Enable syntax highlighting for older Emacsen that have it off
 (global-font-lock-mode t)
 
-;; Save a list of recent files visited.
+; Save a list of recent files visited.
 (recentf-mode 1)
 
-;; Highlight matching parentheses when the point is on them.
+; Highlight matching parentheses when the point is on them.
 (show-paren-mode 1)
 
+; Spell check
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 
-;; Prevent messages about closing buffer
+; Prevent messages about closing buffer
 (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
 
-;; allow files to be opened via emacsclient
+; Open files via emacsclient
 (server-start)
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; rename buffer & visited file
+(global-set-key (kbd "C-c r") 'rename-file)
+

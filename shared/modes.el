@@ -6,7 +6,13 @@
 (load "shared/ruby")
 (load "shared/sgml")
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+; Default to unified diffs
+(setq diff-switches "-u")
+
+(eval-after-load 'diff-mode
+  '(progn
+     (set-face-foreground 'diff-added "green4")
+     (set-face-foreground 'diff-removed "red3")))
 
 (vendor 'magit)
 (eval-after-load 'magit
