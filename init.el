@@ -16,6 +16,7 @@
 (require 'ansi-color)
 (require 'cl)
 (require 'ffap)
+(require 'ido)
 (require 'recentf)
 (require 'saveplace)
 (require 'unbound)
@@ -31,3 +32,16 @@
 (if (file-exists-p user-specific-config) (load user-specific-config))
 (if (file-exists-p user-specific-dir)
   (mapc #'load (directory-files user-specific-dir nil ".*el$")))
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(ido-case-fold t)
+ '(ido-mode (quote both) nil (ido)))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
