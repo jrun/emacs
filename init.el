@@ -1,7 +1,7 @@
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d/vendor")
 
-(setq emacsd "~/emacs.d/")
+(setq emacsd "~/.emacs.d/")
 
 
 (load "shared/defuns")
