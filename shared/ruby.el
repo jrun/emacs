@@ -1,6 +1,9 @@
 (vendor 'rvm)
 (rvm-use-default)
 
+(require 'inf-ruby)
+(setf (first inf-ruby-implementations) '("ruby" . "pry"))
+
 (vendor 'rspec-mode)
 
 (vendor 'rinari)
@@ -8,6 +11,7 @@
 (add-hook 'rinari-minor-mode-hook
           (lambda ()
             (define-key rinari-minor-mode-map (kbd "A-r") 'rinari-test)))
+
 
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.sake\\'" . ruby-mode))
@@ -21,3 +25,4 @@
 
 (vendor 'treetop-mode)
 (add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))
+
