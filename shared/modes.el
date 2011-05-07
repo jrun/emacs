@@ -1,5 +1,6 @@
 (vendor 'jump)
 (vendor 'http-twiddle)
+(vendor 'json)
 
 (load "shared/cucumber")
 (load "shared/javascript")
@@ -50,3 +51,10 @@
 
 ; mustache
 (add-to-list 'auto-mode-alist '("\\.mustache$" . tpl-mode))
+
+
+; haml & sass
+(vendor 'haml-mode)
+(vendor 'sass-mode)
+
+(add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
