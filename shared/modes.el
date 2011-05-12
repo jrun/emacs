@@ -50,7 +50,9 @@
        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ; mustache
+(vendor 'mustache-mode)
 (add-to-list 'auto-mode-alist '("\\.mustache$" . tpl-mode))
+(add-to-list 'auto-mode-alist '("\\.hbs$" . tpl-mode))
 
 
 ; haml & sass
