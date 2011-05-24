@@ -14,6 +14,7 @@
 (require 'uniquify)
 (require 'whitespace)
 
+(load "shared/aliases")
 (load "shared/defuns")
 (load "shared/global")
 (load "shared/bindings")

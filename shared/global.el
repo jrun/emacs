@@ -36,9 +36,4 @@
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 (ansi-color-for-comint-mode-on)
-
-(defalias 'e 'find-file)
-(defalias 'eo 'find-file-other-window)
