@@ -2,6 +2,7 @@
 (vendor 'http-twiddle)
 (vendor 'json)
 
+(load "shared/anything")
 (load "shared/cucumber")
 (load "shared/javascript")
 (load "shared/markdown")
