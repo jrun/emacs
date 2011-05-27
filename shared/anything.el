@@ -14,6 +14,5 @@
      anything-c-source-file-name-history)
    "*my-anything*"))
 
-;(global-set-key (kbd "M-X") 'anything)
-(global-set-key [f11] 'my-anything)
+(global-set-key (kbd "M-X") 'anything)
 (global-set-key [(meta f11)] 'anything-resume)
