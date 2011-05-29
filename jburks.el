@@ -2,6 +2,6 @@
 ;;(setq mac-command-modifier 'meta)
 (setq ns-command-modifier 'meta)
 
-(set-default-font "Consolas-12")
+(set-default-font "Menlo-11")
 
 (setq-default ispell-program-name "/usr/local/bin/aspell")
