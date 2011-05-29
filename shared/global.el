@@ -42,3 +42,6 @@
 (setq uniquify-separator "|")
 (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+; Mostly to make it easier to hop out of org-mode since it's key bindindings override windmove.
+(global-set-key [C-tab] 'other-window)
