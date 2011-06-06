@@ -1,4 +1,4 @@
-#name : require File.join(File.dirname(__FILE__), ... 'spec_helper')
+#name : require 'spec_helper'
 # --
 require 'spec_helper'
 $0
