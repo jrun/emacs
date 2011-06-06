@@ -6,6 +6,7 @@
 (setq inf-ruby-eval-binding "TOPLEVEL_BINDING")
 
 (vendor 'rspec-mode)
+(vendor 'autotest)
 
 ; rhtml
 (setq auto-mode-alist (cons '("\\.html\\.erb" . nxml-mode) auto-mode-alist))
