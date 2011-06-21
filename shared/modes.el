@@ -61,3 +61,7 @@
 (vendor 'sass-mode)
 
 (add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
+
+(eval-after-load "sql"
+  '(progn
+     (sql-set-product 'postgres)))
