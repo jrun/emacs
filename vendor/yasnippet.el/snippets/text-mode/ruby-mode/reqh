@@ -1,0 +1,4 @@
+#name : require 'helper'
+# --
+require 'helper'
+$0

@@ -1,0 +1,5 @@
+#name : minitest describe
+# --
+describe $1 do
+  $0
+end
