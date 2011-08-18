@@ -1,12 +1,6 @@
-[submodule "vendor/rvm"]
-	path = vendor/rvm
-	url = https://github.com/senny/rvm.el.git
 [submodule "vendor/markdown-mode"]
 	path = vendor/markdown-mode
 	url = https://github.com/defunkt/markdown-mode.git
-[submodule "vendor/rinari"]
-	path = vendor/rinari
-	url = https://github.com/technomancy/rinari.git
 [submodule "vendor/magit"]
 	path = vendor/magit
 	url = https://github.com/technomancy/magit.git

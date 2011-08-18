@@ -1,6 +1,3 @@
-(vendor 'rvm)
-(rvm-use-default)
-
 (vendor 'inf-ruby)
 (setf (first inf-ruby-implementations) '("ruby" . "pry"))
 (setq inf-ruby-eval-binding "TOPLEVEL_BINDING")
