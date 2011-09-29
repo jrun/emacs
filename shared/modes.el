@@ -3,11 +3,11 @@
 (vendor 'json)
 
 (load "shared/anything")
-(load "shared/cucumber")
 (load "shared/javascript")
 (load "shared/markdown")
 (load "shared/ruby")
 (load "shared/sgml")
+(load "shared/erlang")
 
 ; Default to unified diffs
 (setq diff-switches "-u")
