@@ -65,3 +65,7 @@
 (eval-after-load "sql"
   '(progn
      (sql-set-product 'postgres)))
+
+; puppet
+(vendor 'puppet-mode)
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
