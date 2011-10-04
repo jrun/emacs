@@ -1,6 +1,6 @@
 ;;;
 ;;; puppet-mode.el
-;;; 
+;;;
 ;;; Author: lutter
 ;;; Description: A simple mode for editing puppet manifests
 ;;;
@@ -67,8 +67,8 @@
 (defun puppet-mode-variables ()
   (set-syntax-table puppet-mode-syntax-table)
   (setq local-abbrev-table puppet-mode-abbrev-table)
-  ;(make-local-variable 'indent-line-function)
-  ;(setq indent-line-function 'ruby-indent-line)
+  (make-local-variable 'indent-line-function)
+  (setq indent-line-function 'ruby-indent-line)
   (make-local-variable 'require-final-newline)
   (setq require-final-newline t)
   (make-variable-buffer-local 'comment-start)
@@ -177,7 +177,7 @@ The variable puppet-indent-level controls the amount of indentation.
      '("\\(\\$\\|@\\|@@\\)\\(\\w\\|_\\)+"
        0 font-lock-variable-name-face)
      ;; usage of types
-     '("^\\s +\\([a-zA-Z-]+\\)\\s +{" 
+     '("^\\s +\\([a-zA-Z-]+\\)\\s +{"
        1 font-lock-type-face)
      ;; general delimited string
      '("\\(^\\|[[ \t\n<+(,=]\\)\\(%[xrqQwW]?\\([^<[{(a-zA-Z0-9 \n]\\)[^\n\\\\]*\\(\\\\.[^\n\\\\]*\\)*\\(\\3\\)\\)"

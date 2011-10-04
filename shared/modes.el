@@ -69,3 +69,6 @@
 ; puppet
 (vendor 'puppet-mode)
 (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+
+; php
+(require 'php-mode)
