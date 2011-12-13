@@ -1,9 +1,6 @@
 [submodule "vendor/markdown-mode"]
 	path = vendor/markdown-mode
 	url = https://github.com/defunkt/markdown-mode.git
-[submodule "vendor/magit"]
-	path = vendor/magit
-	url = https://github.com/technomancy/magit.git
 [submodule "vendor/yaml-mode"]
 	path = vendor/yaml-mode
 	url = https://github.com/yoshiki/yaml-mode.git
