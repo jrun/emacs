@@ -31,5 +31,6 @@
 ; Rename buffer & visited file
 (global-set-key (kbd "C-c r") 'rename-file)
 
-
 (global-set-key "\C-co" 'browse-url-at-point)
+
+(global-set-key (kbd "C-|") 'ns-toggle-fullscreen)
