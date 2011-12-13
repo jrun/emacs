@@ -55,7 +55,6 @@
 (add-to-list 'auto-mode-alist '("\\.mustache$" . tpl-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs$" . tpl-mode))
 
-
 ; haml & sass
 (vendor 'haml-mode)
 (vendor 'sass-mode)
@@ -65,10 +64,6 @@
 (eval-after-load "sql"
   '(progn
      (sql-set-product 'postgres)))
-
-; puppet
-(vendor 'puppet-mode)
-(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
 
 ; php
 (require 'php-mode)
