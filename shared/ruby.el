@@ -7,6 +7,7 @@
 
 ; rhtml
 (setq auto-mode-alist (cons '("\\.html\\.erb" . nxml-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.rhtml" . nxml-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.erb" . nxml-mode) auto-mode-alist))
 
 (add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
