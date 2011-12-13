@@ -50,3 +50,7 @@
   ;; If there is more than one, they won't work right.
  )
 (put 'erase-buffer 'disabled nil)
+
+
+; /sudo:host.example.com:
+(add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
