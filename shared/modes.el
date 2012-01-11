@@ -67,3 +67,5 @@
 
 ; php
 (require 'php-mode)
+
+(require 'slim-mode)
