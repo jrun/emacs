@@ -2,7 +2,6 @@
 (setf (first inf-ruby-implementations) '("ruby" . "pry"))
 (setq inf-ruby-eval-binding "TOPLEVEL_BINDING")
 
-(vendor 'rspec-mode)
 (vendor 'autotest)
 
 ; rhtml
