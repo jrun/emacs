@@ -5,7 +5,7 @@
 
 ;; Taken from emacs-starter-kit
 
-;; Align your code in a pretty way.
+;; Align your codre in a pretty way.
 (global-set-key (kbd "C-x \\") 'align-regexp)
 
 ;; Font size
@@ -17,10 +17,15 @@
 ;;(global-set-key (kbd "C-c r") 'revert-buffer)
 ;;(global-set-key (kbd "C-x C-b") 'ibuffer)
 
-;; Window switching. (C-x o goes to the next window)
-(windmove-default-keybindings) ;; Shift+direction
-(global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1))) ;; back one
-(global-set-key (kbd "C-x C-o") (lambda () (interactive) (other-window 2))) ;; forward two
+;; Window switching using shift arrows
+;;
+;; When running emacs in tmux set the following in .tmux.conf
+;;     set-window-option -g xterm-keys on
+;;
+(global-set-key "\M-[1;2A" 'windmove-up)
+(global-set-key "\M-[1;2B" 'windmove-down)
+(global-set-key "\M-[1;2C" 'windmove-right)
+(global-set-key "\M-[1;2D" 'windmove-left)
 
 ;; Help should search more than just commands
 (global-set-key (kbd "C-h a") 'apropos)
