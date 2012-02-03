@@ -6,15 +6,16 @@
 ;; Vibrant Ink Textmate: http://alternateidea.com/blog/articles/2006/1/3/textmate-vibrant-ink-theme-and-prototype-bundle
 ;; Vivid Chalk in emacs-rails Google Groups: http://groups.google.com/group/emacs-on-rails/browse_thread/thread/f99e3707e59eff6d
 
+
 (defun color-theme-vibrant-ink ()
   "Emacs Vibrant Ink"
   (interactive)
   (color-theme-install
    '(color-theme-vibrant-ink
      ((background-color . "#111111")
-      (background-mode . dark)
+      (background-mode  . dark)
       (border-color . "black")
-      (cursor-color . "white")
+      (cursor-color . "#00FFFF")
       (foreground-color . "white")
       (list-matching-lines-face . bold)
       (view-highlight-face . highlight))
@@ -38,21 +39,18 @@
      (paren-face-match-light ((t (:background "#222222"))))
      (highlight ((t (:background "#222222"))))
      (italic ((t (:italic t))))
-     (modeline ((t (:background "#444444" :foreground "black"))))
-     (modeline-buffer-id ((t (:background "#444444" :foreground
-"black"))))
-     (modeline-mousable ((t (:background "#444444" :foreground
-"black"))))
-     (modeline-mousable-minor-mode ((t (:background
-"#444444" :foreground "black"))))
+     (mode-line ((t (:background "#444444" :foreground "black"))))
+     (mode-line-buffer-id ((t (:background "#444444" :foreground "black"))))
+     (mode-line-mousable ((t (:background "#444444" :foreground "black"))))
+     (mode-line-mousable-minor-mode  ((t (:background "#444444" :foreground "black"))))
+     (isearch ((t (:background "#f57900" :foreground "#2e3436"))))
+     (mouse ((t (:inherit "#EB0586"))))
      (region ((t (:background "#555577"))))
      (primary-selection ((t (:background "#555577"))))
      (isearch ((t (:background "#555555"))))
      (zmacs-region ((t (:background "#555577"))))
      (secondary-selection ((t (:background "darkslateblue"))))
-     (flymake-errline ((t (:background "LightSalmon" :foreground
-"black"))))
-     (flymake-warnline ((t (:background "LightSteelBlue" :foreground
-"black"))))
-     (underline ((t (:underline t))))
+     (flymake-errline ((t (:background "LightSalmon" :foreground "black"))))
+     (flymake-warnline ((t (:background "LightSteelBlue" :foreground "black"))))
+     (underlinev((t (:underline t))))
      (minibuffer-prompt ((t (:bold t :foreground "#ff6600")))))))
