@@ -1,5 +1,6 @@
-(vendor 'jump)
+(vendor 'cheat)
 (vendor 'http-twiddle)
+(vendor 'jump)
 (vendor 'json)
 
 (load "shared/anything")
