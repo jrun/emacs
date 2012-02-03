@@ -69,3 +69,7 @@
 (require 'php-mode)
 
 (require 'slim-mode)
+
+; dtrace
+(autoload 'd-mode "d-mode" () t)
+(add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
