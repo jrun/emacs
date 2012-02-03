@@ -12,6 +12,10 @@
 
 (load "vendor/git-commit-mode/git-commit")
 
+(require 'mouse)
+(xterm-mouse-mode t)
+(defun track-mouse (e))
+
 ; Default to unified diffs
 (setq diff-switches "-u")
 
