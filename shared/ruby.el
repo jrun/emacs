@@ -25,8 +25,3 @@
 
 (vendor 'treetop-mode)
 (add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))
-
-
-; flymake support
-(require 'flymake-ruby)
-(add-hook 'ruby-mode-hook 'flymake-ruby-load)
