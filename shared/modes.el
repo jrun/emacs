@@ -10,6 +10,8 @@
 (load "shared/sgml")
 (load "shared/erlang")
 
+(load "vendor/git-commit-mode/git-commit")
+
 ; Default to unified diffs
 (setq diff-switches "-u")
 
