@@ -1,9 +1,9 @@
+(setq emacsd "~/.emacs.d/")
+
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d/vendor")
 
 (push "/usr/local/bin" exec-path)
-
-(setq emacsd "~/.emacs.d/")
 
 (require 'ansi-color)
 (require 'cl)
@@ -26,31 +26,14 @@
 (load "shared/modes")
 (load "shared/temp-files")
 
-(setq system-specific-config (concat emacsd system-name ".el")
-      user-specific-config (concat emacsd user-login-name ".el")
-      user-specific-dir (concat emacsd user-login-name))
-(add-to-list 'load-path user-specific-dir)
+(when (eq system-type 'darwin)
+  (setq ns-command-modifier 'meta)
+  (set-default-font "Anonymous Pro-11")
+  (setq-default ispell-program-name "/usr/local/bin/aspell"))
 
-(if (file-exists-p system-specific-config) (load system-specific-config))
-(if (file-exists-p user-specific-config) (load user-specific-config))
-(if (file-exists-p user-specific-dir)
-  (mapc #'load (directory-files user-specific-dir nil ".*el$")))
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ido-case-fold t)
- '(ido-mode (quote both) nil (ido))
- '(safe-local-variable-values (quote ((encoding . binary) (ruby-compilation-executable . "ruby") (ruby-compilation-executable . "ruby1.8") (ruby-compilation-executable . "ruby1.9") (ruby-compilation-executable . "rbx") (ruby-compilation-executable . "jruby")))))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
+(when (eg system-type 'gnu/inux))
+
 (put 'erase-buffer 'disabled nil)
-
 
 ; /sudo:host.example.com:
 (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
