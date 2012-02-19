@@ -10,7 +10,7 @@
 (load "shared/sgml")
 (load "shared/erlang")
 
-(load "vendor/git-commit-mode/git-commit")
+(load "git-commit-mode/git-commit")
 
 (require 'mouse)
 (xterm-mouse-mode t)

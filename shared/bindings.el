@@ -3,6 +3,9 @@
 
 (global-set-key [C-tab] 'other-window)
 
+; prefer dired over dumping dir list to buffer
+(global-set-key "\C-x\C-d" 'dired)
+
 ;; Taken from emacs-starter-kit
 
 ;; Align your codre in a pretty way.

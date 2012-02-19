@@ -1,3 +1,8 @@
+;; aliases
+(defalias 'e 'find-file-other-window)
+(defalias 'll "ls -l $*")
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;; for loading libraries in from the vendor directory
 (defun vendor (library)
   (let* ((file (symbol-name library))

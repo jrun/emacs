@@ -1,7 +1,7 @@
 (setq emacsd "~/.emacs.d/")
 
-(add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "~/.emacs.d/vendor")
+(add-to-list 'load-path emacsd)
+(add-to-list 'load-path (concat emacsd "vendor"))
 
 (push "/usr/local/bin" exec-path)
 
@@ -16,22 +16,41 @@
 (require 'uniquify)
 (require 'whitespace)
 
-(load "shared/aliases")
 (load "shared/defuns")
 (load "shared/global")
+
+; color theme
+(require 'color-theme)
+(setq color-theme-is-global t)
+(load-file (concat emacsd "vendor/color-theme-vibrant-ink.el"))
+(color-theme-vibrant-ink)
+
+; shell
+(setq explicit-shell-file-name "/usr/local/bin/zsh")
+(global-set-key "\C-x\C-z" 'shell) ; shortcut for shell
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(eval-after-load 'shell
+  '(progn
+     (define-key shell-mode-map "\C-p" 'comint-previous-input)
+     (define-key shell-mode-map "\C-n" 'comint-next-input)))
+
 (load "shared/bindings")
-(load "shared/color-theme")
-(load "shared/shell")
-(load "shared/dired")
 (load "shared/modes")
 (load "shared/temp-files")
 
 (when (eq system-type 'darwin)
+
   (setq ns-command-modifier 'meta)
   (set-default-font "Anonymous Pro-11")
-  (setq-default ispell-program-name "/usr/local/bin/aspell"))
+  (setq-default ispell-program-name "/usr/local/bin/aspell")
 
-(when (eg system-type 'gnu/inux))
+  ; used for copy/paste when emacs runs in the terminal
+  (require 'pbcopy)
+  (turn-on-pbcopy))
+
+
+; (when (eg system-type 'gnu/linux))
 
 (put 'erase-buffer 'disabled nil)
 
