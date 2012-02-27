@@ -39,6 +39,10 @@
 (load "shared/modes")
 (load "shared/temp-files")
 
+(custom-set-variables
+ '(ido-case-fold t)
+ '(ido-mode (quote both) nil (ido)))
+
 (when (eq system-type 'darwin)
 
   (setq ns-command-modifier 'meta)
