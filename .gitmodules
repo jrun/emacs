@@ -7,9 +7,6 @@
 [submodule "vendor/rspec-mode"]
 	path = vendor/rspec-mode
 	url = https://github.com/anildigital/rspec-mode.git
-[submodule "vendor/http-twiddle"]
-	path = vendor/http-twiddle
-	url = https://github.com/hassy/http-twiddle.git
 [submodule "vendor/sass-mode"]
 	path = vendor/sass-mode
 	url = https://github.com/nex3/sass-mode.git
