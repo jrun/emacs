@@ -24,7 +24,8 @@
      (set-face-foreground 'diff-removed "red3")))
 
 ;; git
-(vendor 'egg)
+(vendor 'magit)
+(global-set-key "\C-cg" 'magit-status)
 
 ;; paredit
 (autoload 'paredit-mode "paredit"

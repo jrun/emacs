@@ -1,5 +1,4 @@
 (global-set-key "\C-co" 'browse-url-at-point)
-(global-set-key "\C-cg" 'egg-status)
 (global-set-key "\C-cr" 'run-ruby)
 
 ;; Rename buffer & visited file
