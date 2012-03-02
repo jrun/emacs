@@ -1,5 +1,0 @@
-#name : Nodeunit Test Case
-# --
-exports.$1 = testCase({
-  $0           
-});

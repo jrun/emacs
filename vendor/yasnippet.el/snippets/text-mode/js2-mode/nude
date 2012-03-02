@@ -1,3 +1,0 @@
-#name : Nodeunit test.deepEqual
-# --
-test.deepEqual($1, $2);$0

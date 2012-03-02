@@ -1,5 +1,0 @@
-#name : minitest TestCase
-# --
-class $1 < MiniTest::Unit::TestCase
-  $0
-end

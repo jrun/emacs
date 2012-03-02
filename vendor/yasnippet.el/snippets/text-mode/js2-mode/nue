@@ -1,3 +1,0 @@
-#name : Nodeunit test.equal
-# --
-test.equal($1, $2);$0

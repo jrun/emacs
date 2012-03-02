@@ -1,5 +1,0 @@
-#name : before(:all) do ... end
-# --
-before(:all) do
-  $0
-end

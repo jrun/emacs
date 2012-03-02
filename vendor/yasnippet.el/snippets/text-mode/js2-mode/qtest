@@ -1,5 +1,0 @@
-#name : test("Test Description", function() {});
-# --
-test("$1", function() {
-  $0
-});

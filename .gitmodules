@@ -25,3 +25,6 @@
 [submodule "vendor/egg"]
 	path = vendor/egg
 	url = https://github.com/byplayer/egg.git
+[submodule "vendor/yasnippet"]
+	path = vendor/yasnippet
+	url = https://github.com/capitaomorte/yasnippet.git

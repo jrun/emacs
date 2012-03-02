@@ -1,3 +1,0 @@
-#name : require('module')
-# --
-require('$1')$0

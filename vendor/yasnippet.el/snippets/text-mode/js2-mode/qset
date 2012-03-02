@@ -1,7 +1,0 @@
-#name : module("Module Name", { setup: function() {}});
-# --
-module("$1", { 
-  setup: function() {
-    $0
-  }
-});

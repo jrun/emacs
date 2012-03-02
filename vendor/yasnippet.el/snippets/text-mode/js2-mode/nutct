@@ -1,7 +1,0 @@
-#name : Nodeunit Test Case Test
-# --
-$1: function(test) {
-  $0    
-  test.done();    
-}
-

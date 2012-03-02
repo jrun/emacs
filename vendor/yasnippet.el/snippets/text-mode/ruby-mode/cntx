@@ -1,5 +1,0 @@
-#name : cntx  "..." do
-# --
-context "$1" do
-  $0
-end
