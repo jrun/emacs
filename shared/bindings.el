@@ -1,15 +1,9 @@
-(global-set-key "\C-xg" 'magit-status)
-(global-set-key "\C-xr" 'run-ruby)
+(global-set-key "\C-co" 'browse-url-at-point)
+(global-set-key "\C-cg" 'egg-status)
+(global-set-key "\C-cr" 'run-ruby)
 
-(global-set-key [C-tab] 'other-window)
-
-; prefer dired over dumping dir list to buffer
-(global-set-key "\C-x\C-d" 'dired)
-
-;; Taken from emacs-starter-kit
-
-;; Align your codre in a pretty way.
-(global-set-key (kbd "C-x \\") 'align-regexp)
+;; Rename buffer & visited file
+(global-set-key (kbd "C-c C-r") 'rename-file)
 
 ;; Font size
 (define-key global-map (kbd "C-+") 'text-scale-increase)
@@ -17,8 +11,6 @@
 
 ;; File finding
 ;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
-;;(global-set-key (kbd "C-c r") 'revert-buffer)
-;;(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; Window switching using shift arrows
 ;;
@@ -33,12 +25,5 @@
 ;; Help should search more than just commands
 (global-set-key (kbd "C-h a") 'apropos)
 
-; A better buffer
+;; A better buffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-
-; Rename buffer & visited file
-(global-set-key (kbd "C-c r") 'rename-file)
-
-(global-set-key "\C-co" 'browse-url-at-point)
-
-(global-set-key (kbd "C-|") 'ns-toggle-fullscreen)

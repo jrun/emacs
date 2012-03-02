@@ -24,16 +24,18 @@
      (set-face-foreground 'diff-added "green4")
      (set-face-foreground 'diff-removed "red3")))
 
-(vendor 'magit)
-(eval-after-load 'magit
-  '(progn
-     (set-face-foreground 'magit-diff-add "green3")
-     (set-face-foreground 'magit-diff-del "red3")))
+;; (vendor 'magit)
+;; (eval-after-load 'magit
+;;   '(progn
+;;      (set-face-foreground 'magit-diff-add "green3")
+;;      (set-face-foreground 'magit-diff-del "red3")))
 
-; paredit
+;; git
+(vendor 'egg)
+
+;; paredit
 (autoload 'paredit-mode "paredit"
-     "Minor mode for pseudo-structurally editing Lisp code."
-     t)
+     "Minor mode for pseudo-structurally editing Lisp code." t)
 (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode +1)))
 
 ; mode-compile

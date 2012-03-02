@@ -5,9 +5,18 @@
 
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
+(setq-default truncate-lines t)
+
+;;
+;; Choosing a Window:
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Choosing-Window.html
+;;
+;; Prevent splitting when visiting another buffer.
+;;
+(setq split-width-threshold nil)
+(setq split-height-threshold nil)
 
 (prefer-coding-system 'utf-8)
-(setq-default truncate-lines t)
 
 ; save the session on exit
 (desktop-save-mode 1)
