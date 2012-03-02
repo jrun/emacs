@@ -19,13 +19,13 @@
 (load "shared/defuns")
 (load "shared/global")
 
-; color theme
+;; color theme
 (require 'color-theme)
 (setq color-theme-is-global t)
 (load-file (concat emacsd "vendor/color-theme-vibrant-ink.el"))
 (color-theme-vibrant-ink)
 
-; shell
+;; shell
 (setq explicit-shell-file-name "/usr/local/bin/zsh")
 (global-set-key "\C-x\C-z" 'shell) ; shortcut for shell
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
@@ -44,7 +44,6 @@
  '(ido-mode (quote both) nil (ido)))
 
 (when (eq system-type 'darwin)
-
   (setq ns-command-modifier 'meta)
   (set-default-font "Anonymous Pro-11")
   (setq-default ispell-program-name "/usr/local/bin/aspell")
@@ -53,10 +52,9 @@
   (require 'pbcopy)
   (turn-on-pbcopy))
 
-
-; (when (eg system-type 'gnu/linux))
+(when (eq system-type 'gnu/linux))
 
 (put 'erase-buffer 'disabled nil)
 
-; /sudo:host.example.com:
+;; /sudo:host.example.com:
 (add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))

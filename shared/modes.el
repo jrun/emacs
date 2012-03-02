@@ -1,5 +1,4 @@
 (vendor 'cheat)
-(vendor 'http-twiddle)
 (vendor 'jump)
 (vendor 'json)
 
@@ -74,8 +73,8 @@
   '(progn
      (sql-set-product 'postgres)))
 
-; php
-(require 'php-mode)
+;; php
+;; (require 'php-mode)
 
 (require 'slim-mode)
 
