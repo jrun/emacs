@@ -13,6 +13,6 @@
      anything-c-source-file-name-history)
    "*my-anything*"))
 
-(global-set-key (kbd "M-X") 'my-anything)
-(global-set-key [(meta f11)] 'anything-resume)
+(global-set-key (kbd "C-\\") 'my-anything)
+(global-set-key [(meta fk11)] 'anything-resume)
 (global-set-key (kbd "M-.") 'anything-etags-select-from-here)
