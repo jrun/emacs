@@ -26,3 +26,7 @@
 
 ;; A better buffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+
+(global-set-key (kbd "C-M-\\") '(lambda () (interactive)
+                                  (indent-region (point-min) (point-max) nil)))
