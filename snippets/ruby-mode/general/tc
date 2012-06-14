@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : MiniTest TestCase
+# key: tc
+# --
+class $1 < MiniTest::Unit::TestCase
+  $0
+end

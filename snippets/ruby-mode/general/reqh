@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : require 'helper'
+# key: reqh
+# --
+require 'helper'
+
+$0

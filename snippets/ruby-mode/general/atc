@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : ActiveSupport TestCase
+# key: atc
+# --
+class $1Test < ActiveSupport::TestCase
+  $0
+end

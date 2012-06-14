@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : require 'test_helper'
+# key: reqth
+# --
+require 'test_helper'
+
+$0
