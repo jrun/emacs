@@ -1,8 +1,12 @@
 (global-set-key "\C-co" 'browse-url-at-point)
-(global-set-key "\C-cr" 'run-ruby)
+
+;; Ruby
+(global-set-key "\C-cr" 'run-pry)
+(global-set-key [f9] 'pry-intercept-rerun)
+(global-set-key [S-f9] 'pry-intercept)
 
 ;; Rename buffer & visited file
-(global-set-key (kbd "C-c C-r") 'rename-file)
+(global-set-key (kbd "C-x C-r") 'rename-file)
 
 ;; Font size
 (define-key global-map (kbd "C-+") 'text-scale-increase)

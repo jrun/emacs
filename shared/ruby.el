@@ -24,3 +24,6 @@
 
 (vendor 'treetop-mode)
 (add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))
+
+;; pry
+(vendor 'pry)
