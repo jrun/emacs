@@ -42,7 +42,8 @@
 ;; yasnippet
 (vendor 'yasnippet)
 (yas/initialize)
-(yas/load-directory (concat emacsd "vendor/yasnippet/snippets"))
+(add-to-list 'yas/snippet-dirs (concat emacsd "snippets"))
+(yas/load-directory (concat emacsd "snippets"))
 
 ;; yaml
 (vendor 'yaml-mode)
