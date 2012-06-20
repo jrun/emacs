@@ -52,4 +52,4 @@
      (flymake-errline ((t (:background "LightSalmon" :foreground "black"))))
      (flymake-warnline ((t (:background "LightSteelBlue" :foreground "black"))))
      (underlinev((t (:underline t))))
-     (minibuffer-prompt ((t (:bold t :foreground "#000384C")))))))
+     (minibuffer-prompt ((t (:bold t :foreground "#00384C")))))))
