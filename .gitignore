@@ -17,3 +17,4 @@ tramp
 \#*
 *-desktop
 eshell
+!vendor/js2.elc
