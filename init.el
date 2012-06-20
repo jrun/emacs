@@ -45,7 +45,7 @@
 
 (when (eq system-type 'darwin)
   (setq ns-command-modifier 'meta)
-  (set-default-font "Anonymous Pro-11")
+  (set-frame-font "Anonymous Pro-11")
   (setq-default ispell-program-name "/usr/local/bin/aspell")
 
   ; used for copy/paste when emacs runs in the terminal
