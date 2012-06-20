@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : QUnit test
+# key: test
+# --
+test('$1', function() {
+  $0
+});

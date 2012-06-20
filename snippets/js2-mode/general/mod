@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : QUnit module
+# key: mod
+# --
+module('');
+
+$0

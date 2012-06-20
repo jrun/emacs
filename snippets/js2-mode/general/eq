@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : QUnit equal
+# key: eq
+# --
+equal($1, $2);
+$0
