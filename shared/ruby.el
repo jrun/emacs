@@ -1,14 +1,3 @@
-(vendor 'inf-ruby)
-(setf (first inf-ruby-implementations) '("ruby" . "pry"))
-(setq inf-ruby-eval-binding "TOPLEVEL_BINDING")
-
-(vendor 'autotest)
-
-; rhtml
-(setq auto-mode-alist (cons '("\\.html\\.erb" . nxml-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.rhtml" . nxml-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.erb" . nxml-mode) auto-mode-alist))
-
 (add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
@@ -22,8 +11,14 @@
 
 (add-to-list 'completion-ignored-extensions ".rbc")
 
-(vendor 'treetop-mode)
-(add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))
+;; rhtml
+(add-to-list 'load-path (concat emacsd "vendor/rhtml-mode"))
+(require 'rhtml-mode)
+(add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
 
 ;; pry
 (vendor 'pry)
+
+;; treetip
+(vendor 'treetop-mode)
+(add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))

@@ -12,39 +12,33 @@
   (interactive)
   (color-theme-install
    '(color-theme-vibrant-ink
-     (
-;      (background-color . "#111111")
- ;     (background-mode  . dark)
+     ((default ((t (nil))))
+      (background-mode  . dark)
+      (foreground-color . "#81908f")
       (border-color . "black")
-      (cursor-color . "#00FFFF")
+      (cursor-color . "#e9e2cb")
       (foreground-color . "#EDE8D5")
       (list-matching-lines-face . bold)
       (view-highlight-face . highlight))
-     (default ((t (nil))))
      (bold ((t (:bold t))))
      (bold-italic ((t (:italic t :bold t))))
      (font-lock-builtin-face ((t (:foreground "#aaccff"))))
      (font-lock-comment-face ((t (:italic t :foreground "#9933cc"))))
      (font-lock-comment-delimiter-face ((t (:foreground "#9933cc"))))
-     (font-lock-constant-face ((t (:foreground "#339999"))))
+     (font-lock-constant-face ((t (:foreground "#00384C"))))
      (font-lock-function-name-face ((t (:foreground "#ffcc00"))))
      (font-lock-keyword-face ((t (:foreground "#ff6600"))))
      (font-lock-preprocessor-face ((t (:foreground "#aaffff"))))
-     (font-lock-reference-face ((t (:foreground "LightSteelBlue"))))
-     (font-lock-string-face ((t (:foreground "#66FF00"))))
+     (font-lock-reference-face ((t (:foreground "#92BBFD"))))
+     (font-lock-string-face ((t (:foreground "#5fff00"))))
      (font-lock-doc-face ((t (:foreground "LightSalmon"))))
      (font-lock-type-face ((t (:foreground "#FFDD00"))))
-     (font-lock-variable-name-face ((t (:foreground "#80C3FF"))))
+     (font-lock-variable-name-face ((t (:foreground "#2075c7"))))
      (font-lock-warning-face ((t (:bold t :foreground "Pink"))))
-     (paren-face-match-light ((t (:background "#222222"))))
-     (highlight ((t (:background "#222222"))))
+     (show-paren-match ((t (:background "brightcyan"))))
+     (show-paren-mismatch ((t (:foreground "red" :background "#465a61" :weight bold))))
+     (highlight ((t (:background "black" :foreground "white"))))
      (italic ((t (:italic t))))
-;     (mode-line ((t (:background "#052833" :foreground "#859496"))))
-;     (mode-line-buffer-id ((t (:background "#052833" :foreground "black"))))
-;     (mode-line-mousable ((t (:background "#444444" :foreground "black"))))
-;     (mode-line-mousable-minor-mode  ((t (:background "#444444" :foreground "black"))))
-;     (isearch ((t (:background "#f57900" :foreground "#2e3436"))))
-;     (mouse ((t (:inherit "#EB0586"))))
      (region ((t (:background "#555577"))))
      (primary-selection ((t (:background "#555577"))))
      (zmacs-region ((t (:background "#555577"))))
@@ -52,4 +46,19 @@
      (flymake-errline ((t (:background "LightSalmon" :foreground "black"))))
      (flymake-warnline ((t (:background "LightSteelBlue" :foreground "black"))))
      (underlinev((t (:underline t))))
+
+     ;; for rhtml
+     ;;
+     ;; erb-face
+     ;; erb-delim-face
+     ;; erb-exec-face
+     ;; erb-exec-delim-face
+     ;; erb-out-face
+     ;; erb-out-delim-face
+     ;; erb-comment-face
+     ;; erb-comment-delim-face
+     (erb-face ((t (:background "brightblack"))))
+     (erb-delim-face ((t (:background "brightblack" :foreground "brightgreen"))))
+     (erb-out-delim-face ((t (:background "brightblack" :foreground "brightgreen"))))
+
      (minibuffer-prompt ((t (:bold t :foreground "#00384C")))))))
