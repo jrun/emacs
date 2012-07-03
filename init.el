@@ -40,8 +40,19 @@
 (load "shared/temp-files")
 
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(css-indent-offset 2)
  '(ido-case-fold t)
- '(ido-mode (quote both) nil (ido)))
+ '(ido-mode (quote both) nil (ido))
+ '(js2-basic-offset 2)
+ '(js2-highlight-level 3)
+ '(js2-include-gears-externs nil)
+ '(js2-indent-on-enter-key t)
+ '(js2-mirror-mode t))
+
 
 (when (eq system-type 'darwin)
   (setq ns-command-modifier 'meta)
@@ -57,4 +68,11 @@
 (put 'erase-buffer 'disabled nil)
 
 ;; /sudo:host.example.com:
-(add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
+;(add-to-list 'tramp-default-proxies-alist '(nil "\\`root\\'" "/ssh:%h:"))
+(put 'downcase-region 'disabled nil)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
