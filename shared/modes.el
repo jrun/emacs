@@ -59,7 +59,7 @@
 
 
 ;; haml & sass
-(vendor 'haml-mode)
+(require 'haml-mode)
 (vendor 'sass-mode)
 
 (add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
