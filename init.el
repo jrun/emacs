@@ -19,17 +19,13 @@
 (load "shared/defuns")
 (load "shared/global")
 
-;; color theme
-(require 'color-theme)
-(setq color-theme-is-global t)
-(load-file (concat emacsd "vendor/color-theme-vibrant-ink.el"))
-(color-theme-vibrant-ink)
+(add-to-list 'custom-theme-load-path (concat emacsd "themes"))
+(load-theme 'jtb t)
 
 ;; shell
 (setq explicit-shell-file-name "/usr/local/bin/zsh")
 (global-set-key "\C-x\C-z" 'shell) ; shortcut for shell
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
 (eval-after-load 'shell
   '(progn
      (define-key shell-mode-map "\C-p" 'comint-previous-input)
