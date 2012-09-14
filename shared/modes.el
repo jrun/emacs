@@ -41,7 +41,7 @@
 
 ;; yasnippet
 (vendor 'yasnippet)
-(yas/initialize)
+(yas-global-mode 1)
 (add-to-list 'yas/snippet-dirs (concat emacsd "snippets"))
 (yas/load-directory (concat emacsd "snippets"))
 
