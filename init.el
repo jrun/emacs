@@ -41,6 +41,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(css-indent-offset 2)
+ '(egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode)))
  '(ido-case-fold t)
  '(ido-mode (quote both) nil (ido))
  '(js2-basic-offset 2)
@@ -48,7 +49,8 @@
  '(js2-include-gears-externs nil)
  '(js2-indent-on-enter-key t)
  '(js2-mirror-mode t)
- '(rst-level-face-base-color "black"))
+ '(rst-level-face-base-color "black")
+ '(ruby-hanging-indent-level 2))
 
 
 (when (eq system-type 'darwin)
