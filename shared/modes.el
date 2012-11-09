@@ -79,6 +79,13 @@
 ;; dtrace
 (autoload 'd-mode "d-mode" () t)
 (add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
+
+;; activate rainbows
+(add-hook 'css-mode-hook
+          '(lambda ()
+             (require 'rainbow-mode)
+             (rainbow-mode 1)))
+
 ;; coffee
 (require 'coffee-mode)
 (add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
@@ -92,6 +99,11 @@
   (set 'tab-width 2))
 
 (add-hook 'coffee-mode-hook 'coffee-custom)
-+
+
+(defun my-html-mode-hook ()
+  (auto-fill-mode -1))
+
+(add-hook 'html-mode-hook 'my-html-mode-hook)
+
 ;; go
 (vendor 'go-mode-load)
