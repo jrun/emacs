@@ -3,6 +3,9 @@
 (vendor 'json)
 
 (load "shared/anything")
+(vendor 'toggle)
+(global-set-key (kbd "C-x C-t") 'toggle-buffer)
+
 (load "shared/javascript")
 (load "shared/markdown")
 (load "shared/ruby")
