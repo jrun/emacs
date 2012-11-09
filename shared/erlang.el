@@ -8,7 +8,7 @@
 
       (setq load-path (cons (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.6.5/emacs") load-path))
       (setq exec-path (cons (concat erlang-root-dir "/bin") exec-path))
-      (require 'erlang-start)
+      ;;(require 'erlang-start)
 
       ;; Tell Emacs not to wait the usual 60 seconds for an Erlang prompt
       (defvar inferior-erlang-prompt-timeout t)
