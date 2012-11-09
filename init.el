@@ -47,7 +47,8 @@
  '(js2-highlight-level 3)
  '(js2-include-gears-externs nil)
  '(js2-indent-on-enter-key t)
- '(js2-mirror-mode t))
+ '(js2-mirror-mode t)
+ '(rst-level-face-base-color "black"))
 
 
 (when (eq system-type 'darwin)
