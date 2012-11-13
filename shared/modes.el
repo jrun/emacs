@@ -2,9 +2,6 @@
 (vendor 'jump)
 (vendor 'json)
 
-(vendor 'toggle)
-(global-set-key (kbd "C-x C-t") 'toggle-buffer)
-
 (load "shared/javascript")
 (load "shared/ruby")
 (load "shared/markdown")
@@ -25,12 +22,16 @@
      (set-face-foreground 'diff-added "green4")
      (set-face-foreground 'diff-removed "red3")))
 
+;; toggle
+(vendor 'toggle)
+(global-set-key (kbd "C-x C-t") 'toggle-buffer)
+
 ;; git
 (vendor 'egg)
 
 ;; paredit
 (autoload 'paredit-mode "paredit"
-     "Minor mode for pseudo-structurally editing Lisp code." t)
+  "Minor mode for pseudo-structurally editing Lisp code." t)
 (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode +1)))
 
 ;; mode-compile
