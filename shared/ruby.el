@@ -19,9 +19,6 @@
 (vendor 'rhtml-mode)
 (add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
 
-;; pry
-(vendor 'pry)
-
 ;; treetip
 (vendor 'treetop-mode)
 (add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))
