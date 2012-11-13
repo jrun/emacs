@@ -66,10 +66,6 @@
 
 (add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
 
-(eval-after-load "sql"
-  '(progn
-     (sql-set-product 'postgres)))
-
 ;; php
 ;; (require 'php-mode)
 
@@ -106,3 +102,18 @@
 
 ;; go
 (vendor 'go-mode-load)
+
+;; sql
+(defun sql-add-newline-first (output)
+  "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'"
+  (concat "\n" output))
+
+(defun sqli-add-hooks ()
+  "Add hooks to `sql-interactive-mode-hook'."
+  (add-hook 'comint-preoutput-filter-functions 'sql-add-newline-first))
+
+(eval-after-load "sql"
+  '(progn
+     (sql-set-product 'postgres)
+     (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
+     (add-hook 'sql-interactive-mode-hook 'sql-set-sqli-buffer-generally)))
