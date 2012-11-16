@@ -50,7 +50,7 @@
  '(js2-indent-on-enter-key t)
  '(js2-mirror-mode t)
  '(rst-level-face-base-color "black")
- '(ruby-extra-keywords (quote ("private" "protected" "public")))
+ '(ruby-extra-keywords (quote ("private" "protected" "public" "raise")))
  '(ruby-hanging-indent-level 2))
 
 
