@@ -1,5 +1,4 @@
 (add-to-list 'load-path (concat emacsd "vendor/Enhanced-Ruby-Mode"))
-(autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
 
 (add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
