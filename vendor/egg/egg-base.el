@@ -70,7 +70,7 @@
 Evaluate BODY with VAR bound to each car from LIST, in turn.
 if DONE then stops the loop and return DONE.
 \(fn (VAR LIST DONE) BODY...)"
-  (declare (indent 1) (debug ((symbolp form &optional form) body)))
+  (declare (indent 1))
   (let ((temp '--dolist-tail--))
     `(let ((,temp ,(nth 1 spec))
 	   ,(car spec) ,(nth 2 spec))
@@ -83,10 +83,28 @@ if DONE then stops the loop and return DONE.
 ;; avoid cl
 (defsubst subseq (seq start &optional end) (edmacro-subseq seq start end))
 
-(defun find-if (predicate seq)
+(defun egg-find-if (predicate seq)
   (dolist-done (item seq found)
     (when (funcall predicate item)
       (setq found item))))
+
+(defsubst egg--find-not (list predicate)
+  (let (item found)
+    (while (and (not found) list)
+      (setq item (car list))
+      (setq list (cdr list))
+      (unless (funcall predicate item)
+	(setq found item)))
+    found))
+
+(defsubst egg--find (list predicate)
+  (let (item found)
+    (while (and (not found) list)
+      (setq item (car list))
+      (setq list (cdr list))
+      (when (funcall predicate item)
+	(setq found item)))
+    found))
 
 (defsubst egg-unquote-posix-regexp (string)
   (while (string-match "\\\\[\\|()]" string)
@@ -150,6 +168,7 @@ works around the deprecation of 'interactive-p' after Emacs 23.2"
 
 (autoload  'find-file-at-point "ffap" 
   "Find filename, guessing a default from text around point." t)
+(defalias 'egg-find-file-at-point 'find-file-at-point)
 (defsubst egg-string-at-point () (current-word t))
 
 (defsubst egg-goto-line (line)
@@ -434,8 +453,6 @@ E.g: `bar' in `foo/bar'"
 		      (t (error "What happened? (action-if-not-set = %s)"
 				action-if-not-set))))
 	      agent-info))))
-
-
 
 ;;;========================================================
 ;;; Documentation helpers

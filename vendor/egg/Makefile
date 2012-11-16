@@ -1,9 +1,12 @@
 EMACS := emacs -q --no-site-file
-SRCS  := egg-custom.el egg-base.el egg-const.el egg-git.el egg.el egg-grep.el egg-key.el
+SRCS  := egg-custom.el egg-base.el egg-const.el egg-git.el egg.el \
+	 egg-grep.el egg-key.el egg-diff.el
 ELCS  := $(patsubst %.el,%.elc,$(SRCS))
 DEPS  := $(patsubst %.el,.%.d,$(SRCS))
 
-.PHONY: all doc doc.clean clean
+LOAD_DEPS  := $(patsubst %.el,.%.deps,$(SRCS))
+
+.PHONY: all doc doc.clean clean loaddeps
 
 %.elc : %.el
 	@echo Compiling $<
@@ -12,11 +15,16 @@ DEPS  := $(patsubst %.el,.%.d,$(SRCS))
 .%.d : %.el
 	@echo Generating dependencies for $<
 	@echo "$@ : $< " > $@
+	@echo ".$*.deps : $< " >> $@
 	@echo -n "$*.elc : $< " >> $@
 	@sed -ne "s/^(require '\(egg.*\))/\1.elc/p" $< | tr '\n' ' ' >> $@
 	@echo "" >> $@
 
-all : $(DEPS) $(ELCS)
+.%.deps : %.el
+	@echo Generating load dependencies for $<
+	@sed -ne "s/^(require '\(egg.*\))/\1 "$*"/p" $< > $@
+
+all : $(DEPS) $(ELCS) egg-reload.el
 
 doc :
 	$(MAKE) -C doc
@@ -25,6 +33,12 @@ doc.clean :
 	$(MAKE) -C doc clean
 
 clean : doc.clean
-	-rm $(ELCS) $(DEPS)
+	-rm $(ELCS) $(DEPS) $(LOAD_DEPS)
+
+loaddeps : $(LOAD_DEPS)
+
+egg-reload.el : $(LOAD_DEPS)
+	@echo Generating $@
+	@cat $^ | tsort | sed -nre 's/^(.+)$$/\(load "\1"\)/p' > $@
 
 -include $(DEPS)

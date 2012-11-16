@@ -76,6 +76,8 @@
 (defconst egg-staged-diff-section-map
   (let ((map (make-sparse-keymap "Egg:StagedDiff")))
     (set-keymap-parent map egg-diff-section-map)
+    (define-key map (kbd "RET") 'egg-staged-diff-section-cmd-visit-index-other-window)
+    (define-key map (kbd "f") 'egg-staged-diff-section-cmd-visit-index)
     (define-key map (kbd "=") 'egg-staged-section-cmd-ediff3)
     (define-key map (kbd "s") 'egg-diff-section-cmd-unstage)
     (define-key map (kbd "DEL") 'egg-diff-section-cmd-revert-to-head)
@@ -148,6 +150,7 @@ the index. \\{egg-wdir-diff-section-map}")
 (defconst egg-staged-hunk-section-map
   (let ((map (make-sparse-keymap "Egg:StagedHunk")))
     (set-keymap-parent map egg-hunk-section-map)
+    (define-key map (kbd "RET") 'egg-staged-hunk-cmd-visit-index-other-window)
     (define-key map (kbd "=") 'egg-staged-section-cmd-ediff3)
     (define-key map (kbd "s") 'egg-hunk-section-cmd-unstage)
 
@@ -196,6 +199,54 @@ the index. \\{egg-wdir-diff-section-map}")
     map)
   "Keymap for a hunk in a unmerged diff section.
 \\{egg-unmerged-conflict-map}")
+
+(defconst egg-status-base-map
+  (let ((map (make-sparse-keymap "Egg:StatusBase")))
+    (set-keymap-parent map egg-buffer-mode-map)
+    (define-key map (kbd "c") 'egg-commit-log-edit)
+    (define-key map (kbd "d") 'egg-diff-ref)
+    (define-key map (kbd "l") 'egg-log)
+    (define-key map (kbd "S") 'egg-stage-all-files)
+    (define-key map (kbd "U") 'egg-unstage-all-files)
+    map)
+  "Basic keymap for the status buffer.\\{egg-status-base-map}")
+
+(defconst egg-status-buffer-mode-map
+  (let ((map (make-sparse-keymap "Egg:StatusBuffer")))
+    (set-keymap-parent map egg-status-base-map)
+    (define-key map (kbd "c") 'egg-commit-log-edit)
+    (define-key map (kbd "d") 'egg-diff-ref)
+    (define-key map (kbd "l") 'egg-log)
+    (define-key map (kbd "b") 'egg-start-new-branch)
+    (define-key map (kbd "o") 'egg-status-buffer-checkout-ref)
+    (define-key map (kbd "w") 'egg-status-buffer-stash-wip)
+    (define-key map (kbd "G") 'egg-status)
+    (define-key map (kbd "L") 'egg-reflog)
+    (define-key map (kbd "S") 'egg-stage-all-files)
+    (define-key map (kbd "U") 'egg-unstage-all-files)
+    (define-key map (kbd "X") 'egg-status-buffer-undo-wdir)
+    map)
+  "Keymap for the status buffer.\\{egg-status-buffer-mode-map}")
+
+(defconst egg-status-buffer-istash-map
+  (let ((map (make-sparse-keymap "Egg:StatusBufferIStash")))
+    (set-keymap-parent map egg-section-map)
+    (define-key map (kbd "x") 'egg-sb-istash-abort)
+    (define-key map (kbd "C-c C-c") 'egg-sb-istash-go)
+    (define-key map (kbd "RET") 'egg-sb-istash-go)
+    map)
+  "Context keymap for the repo section of the status buffer when
+  interactive stash is in progress.\\{egg-status-buffer-istash-map}")
+
+(defconst egg-status-buffer-rebase-map
+  (let ((map (make-sparse-keymap "Egg:StatusBufferRebase")))
+    (set-keymap-parent map egg-section-map)
+    (define-key map (kbd "x") 'egg-buffer-rebase-abort)
+    (define-key map (kbd "u") 'egg-buffer-selective-rebase-skip)
+    (define-key map (kbd "RET") 'egg-buffer-selective-rebase-continue)
+    map)
+  "Context keymap for the repo section of the status buffer when
+  rebase is in progress.\\{egg-status-buffer-rebase-map}")
 
 (defconst egg-status-buffer-common-help-text
   (concat
