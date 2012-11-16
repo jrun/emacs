@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: task
+# key: task
+# --
+desc '$2'
+task $1 do
+  $0
+end

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: def test
+# key: deft
+# --
+def test_$1
+  $0
+end

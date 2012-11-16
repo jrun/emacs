@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : gemp
+# key: gemp
+# --
+gem '$1', path: '$2'
+$0

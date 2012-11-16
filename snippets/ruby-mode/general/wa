@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : Word array
+# key: wa
+# --
+%w|$1|
+$0

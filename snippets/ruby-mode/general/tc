@@ -2,6 +2,12 @@
 # name : MiniTest TestCase
 # key: tc
 # --
-class $1 < MiniTest::Unit::TestCase
+class Test${1:`(let ((fn (capitalize (file-name-nondirectory
+                 (file-name-sans-extension
+          				 (or (buffer-file-name)
+			        	     (buffer-name (current-buffer))))))))
+                (cond
+                  ((string-match "_" fn) (replace-match "" nil nil fn))
+                  (t fn)))`} < MiniTest::Unit::TestCase
   $0
 end

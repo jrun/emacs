@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : Assign an instance variable
+# key: @
+# --
+@${1:} = $1
+$0

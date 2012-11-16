@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name : gem
-# key: gem
+# name : gemv
+# key: gemv
 # --
-gem '$1', '$2'
+gem '$1', '~> $2'
 $0
