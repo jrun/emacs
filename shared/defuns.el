@@ -15,3 +15,9 @@
      ((file-exists-p suffix) (require library)))
     (when (file-exists-p (concat shared ".el"))
       (load shared))))
+
+(defun touch ()
+  "updates mtime on the file for the current buffer"
+  (interactive)
+  (shell-command (concat "touch " (shell-quote-argument (buffer-file-name))))
+  (clear-visited-file-modtime))
