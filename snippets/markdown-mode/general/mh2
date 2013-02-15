@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : Header Level 2
+# key: mh2
+# --
+${1:Title}
+${1:$(make-string (+ (string-width text) 1) ?\-)}

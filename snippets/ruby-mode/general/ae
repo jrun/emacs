@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : assert_equal
+# key: ae
+# --
+assert_equal $1, $2
+$0

@@ -8,6 +8,6 @@ class ${1:`(let ((fn (capitalize (file-name-nondirectory
 			        	     (buffer-name (current-buffer))))))))
                 (cond
                   ((string-match "_" fn) (replace-match "" nil nil fn))
-                  (t fn)))`}Test < ActiveSupport::TestCase
+                  (t fn)))`} < ActiveSupport::TestCase
   $0
 end
