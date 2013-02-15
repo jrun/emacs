@@ -2,7 +2,7 @@ loaddefs.el*
 backups/*
 auto-save-list
 custom.el
-*elc
+*.elc
 places
 url/cookies
 oddmuse/*
