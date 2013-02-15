@@ -573,7 +573,7 @@ token on the line."
 		((go-mode-in-comment)
 		 ;; move point to char preceeding current comment
 		 (goto-char (1- (car (go-mode-in-comment)))))
-
+		
 		;; not in a comment or whitespace? we must be done.
 		(t (setq loop-guard nil)
 		   (forward-char 1)))))))
