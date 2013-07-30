@@ -42,6 +42,12 @@
  ;; If there is more than one, they won't work right.
  '(css-indent-offset 2)
  '(egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode)))
+ '(enh-ruby-bounce-deep-indent t)
+ '(enh-ruby-comment-column 50)
+ '(enh-ruby-deep-arglist t)
+ '(enh-ruby-extra-keywords (quote ("private" "protected" "public" "raise")))
+ '(enh-ruby-hanging-indent-level 2)
+ '(enh-ruby-program "~/.rbenv/versions/ruby-2.0.0-p247/bin/ruby")
  '(ido-case-fold t)
  '(ido-mode (quote both) nil (ido))
  '(js2-basic-offset 2)
@@ -75,4 +81,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(enh-ruby-heredoc-delimiter-face ((t (:foreground "green"))))
+ '(enh-ruby-op-face ((t (:foreground "color-23"))))
+ '(enh-ruby-regexp-delimiter-face ((t (:foreground "green"))))
+ '(enh-ruby-string-delimiter-face ((t (:foreground "green"))))
+ '(erm-syn-errline ((t (:foreground "red" :box (:line-width 1 :color "red") :underline nil))))
+ '(erm-syn-warnline ((t (:box (:line-width 1 :color "orange") :underline nil)))))

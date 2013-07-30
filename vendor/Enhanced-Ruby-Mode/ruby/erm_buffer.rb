@@ -24,9 +24,10 @@ class ErmBuffer
 
       @first_token=ft
       @last_add=la
-      (parser.equal?(self) ||
-       lineno != parser.lineno() ? self : prev)
-      .realadd(sym,tok,len)
+
+      target = parser.equal?(self) || lineno != parser.lineno() ? self : prev
+      target.realadd(sym, tok, len)
+
       sym
     end
   end
@@ -46,7 +47,9 @@ class ErmBuffer
 
     def realadd(sym,tok,len)
       if sym == :indent
-        @indent_stack << tok << @count+len if @count+len <= @point_max && @count+len >= @point_min
+        pos = @count + len
+        @indent_stack << tok << pos if pos.between? @point_min, @point_max
+
         return
       end
 
@@ -54,6 +57,7 @@ class ErmBuffer
       if (start=@count) > @point_max
         throw :parse_complete
       end
+
       unless len
         len=2+@src.index("\n",start)-start
       end
@@ -122,12 +126,11 @@ class ErmBuffer
       add(:rem,tok)
     end
 
-    for sym in [:embexpr_end, :float, :int,
-                :qwords_beg, :words_beg, :words_sep]
+    for sym in [:embexpr_end, :float, :int, :qwords_beg, :words_beg, :words_sep]
       alias_method "on_#{sym}", :on_backref
     end
 
-    [:CHAR, :__end__, :label, :tstring_content, :label, :regexp_beg,
+    [:CHAR, :__end__, :label, :tstring_content, :regexp_beg,
      :backtick, :tstring_beg, :tlambda,
      :embdoc_beg, :embdoc, :embdoc_end].each do |event|
       module_eval(<<-End, __FILE__, __LINE__ + 1)
@@ -154,9 +157,10 @@ class ErmBuffer
       list.inject({}){|h,k| h[k]=true; h}
     end
 
-    INDENT_KW    = make_hash [:begin, :def, :for, :case, :module, :class, :do]
+    INDENT_KW    = make_hash [:begin, :def, :case, :module, :class, :do]
     BACKDENT_KW  = make_hash [:elsif, :else, :when, :rescue, :ensure]
     BEGINDENT_KW = make_hash [:if, :unless, :while, :until]
+    POSTCOND_KW  = make_hash [:if, :unless, :or, :and]
 
     def on_op(tok)
       if @mode == :sym
@@ -378,6 +382,7 @@ class ErmBuffer
           r
         end
       else
+        last_add = nil
         if sym == :end
           indent(:e)
         elsif sym == :do
@@ -386,13 +391,19 @@ class ErmBuffer
           @block=:b4args
           return r
         elsif BEGINDENT_KW.include? sym
-          indent(:b) if @statment_start
+          if @statment_start
+            indent(:b)
+          elsif POSTCOND_KW.include? sym
+            last_add = :cont
+          end
+        elsif POSTCOND_KW.include? sym
+          last_add = :cont
         elsif INDENT_KW.include? sym
           indent(:b)
         elsif BACKDENT_KW.include? sym
           indent(:s) if @statment_start
         end
-        r=add(:kw,sym)
+        r=add(:kw,sym,sym.size,false,last_add)
         @mode= (sym==:def || sym==:alias) && :predef
         r
       end
@@ -448,37 +459,38 @@ class ErmBuffer
   end
 
   FONT_LOCK_NAMES= {
-    rem: 0,             # 'remove'
-    sp: 0,
-    ident: 0,
-    tstring_content: 1, # font-lock-string-face
-
-    const: 2,           # font-lock-type-face
-    ivar: 3,            # font-lock-variable-name-face
-    arglist: 3,
-    cvar: 3,
-    gvar: 3,
-    comment: 4,         # font-lock-comment-face
-    embdoc: 4,
-    label: 5,           # font-lock-constant-face
-    CHAR: 6,            # font-lock-string-face
-    backtick: 7,        # ruby-string-delimiter-face
-    __end__: 7,
-    embdoc_beg: 7,
-    embdoc_end: 7,
-    tstring_beg: 7,
-    regexp_beg: 8,      # ruby-regexp-delimiter-face
-    regexp_end: 8,
-    tlambda: 9,         # font-lock-function-name-face
-    defname: 9,
-    kw: 10,             # font-lock-keyword-face
-    block: 10,
-    heredoc_beg: 11,
-    heredoc_end: 11,
-    op: 12,             # ruby-op-face
-  }
+    rem:             0,  # 'remove'
+    sp:              0,
+    ident:           0,
+    tstring_content: 1,  # font-lock-string-face
+    const:           2,  # font-lock-type-face
+    ivar:            3,  # font-lock-variable-name-face
+    arglist:         3,
+    cvar:            3,
+    gvar:            3,
+    comment:         4,  # font-lock-comment-face
+    embdoc:          4,
+    label:           5,  # font-lock-constant-face
+    CHAR:            6,  # font-lock-string-face
+    backtick:        7,  # ruby-string-delimiter-face
+    __end__:         7,
+    embdoc_beg:      7,
+    embdoc_end:      7,
+    tstring_beg:     7,
+    regexp_beg:      8,  # ruby-regexp-delimiter-face
+    regexp_end:      8,
+    tlambda:         9,  # font-lock-function-name-face
+    defname:         9,
+    kw:              10, # font-lock-keyword-face
+    block:           10,
+    heredoc_beg:     11,
+    heredoc_end:     11,
+    op:              12, # ruby-op-face
+    }
 
   def initialize
+    @extra_keywords = nil
+    @first_count = nil
     @buffer=''
   end
 

@@ -80,7 +80,7 @@
 (add-hook 'css-mode-hook
           '(lambda ()
              (require 'rainbow-mode)
-             (rainbow-mode 1)))
+             (rainbo>w-mode 1)))
 
 ;; coffee
 (require 'coffee-mode)
@@ -118,3 +118,6 @@
      (sql-set-product 'postgres)
      (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
      (add-hook 'sql-interactive-mode-hook 'sql-set-sqli-buffer-generally)))
+
+
+(require 'nasal-mode)

@@ -1,0 +1,62 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Sat Jun 29 08:38:56 2013
+;; Desktop file format version 206
+;; Emacs version 24.3.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("lib"))
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+(setq file-name-history '("~/emacs/shared/" "/Users/jtb/emacs/shared/ruby.el" "~/.ido.last" "~/work/projects/portal/lib/license_usage_report.rb" "~/work/projects/portal/app/controllers/customer_controller.rb" "~/work/projects/portal/app/helpers/customer_helper.rb" "~/work/projects/portal/lib/tasks/usage.rake" "~/work/projects/www2/app/views/about/walt.html.erb" "~/work/projects/www2/app/controllers/about_controller.rb" "~/work/projects/www2/app/controllers/welcome_controller.rb" "~/work/projects/portal/lib/license_usage.rb" "~/work/projects/www2/app/models/acronym.rb" "~/work/projects/www2/HISTORY.md" "~/work/projects/www2/app/assets/stylesheets/style.css" "~/work/projects/www2/app/assets/stylesheets/less/style.less" "~/work/projects/www2/app/assets/stylesheets/application.css" "~/work/projects/www2/app/assets/javascripts/application.js" "~/work/projects/www2/app/views/compliance/pci_pa_dss.html.erb" "~/work/projects/www2/app/views/managed_services/secure_email.html.erb" "~/work/projects/www2/app/assets/images/about/walt-eulogy.png" "~/work/projects/www2/app/views/layouts/application.html.erb" "~/work/projects/www2/app/views/layouts/_head.html.erb"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/Users/jtb/emacs/shared/ruby.el"
+  "ruby.el"
+  'emacs-lisp-mode
+  '(yas-minor-mode paredit-mode egg-minor-mode)
+  179
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/Users/jtb/work/projects/scan_controller/lib/scan_controller.rb"
+  "scan_controller.rb"
+  'enh-ruby-mode
+  '(abbrev-mode yas-minor-mode egg-minor-mode)
+  1
+  '(nil nil)
+  nil
+  nil
+  '((indent-tabs-mode) (buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  nil
+  "lib"
+  'dired-mode
+  '(yas-minor-mode)
+  301
+  '(nil nil)
+  t
+  '("/Users/jtb/work/projects/scan_controller/lib/")
+  nil)
+
+(desktop-create-buffer 206
+  nil
+  "scan_controller"
+  'dired-mode
+  '(yas-minor-mode)
+  572
+  '(239 nil)
+  t
+  '("/Users/jtb/work/projects/scan_controller/")
+  nil)
+
