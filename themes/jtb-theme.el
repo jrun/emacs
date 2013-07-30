@@ -6,7 +6,7 @@
 (custom-theme-set-faces
  'jtb
 
- ;; '(default ((t (:background "#111111" :foreground "#ffffff"))))
+ '(default ((t (:foreground "#eee8d5"))))
  '(cursor ((t (:background "#555577" :foreground "#ffffff"))))
  '(region ((t (:background "#444444"))))
  '(mode-line ((t (:background "#bfbfbf" :foreground "#000000"))))
