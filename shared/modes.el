@@ -14,6 +14,10 @@
 (xterm-mouse-mode t)
 (defun track-mouse (e))
 
+;; ag
+(add-to-list 'load-path (concat emacsd "vendor/ag.el"))
+(require 'ag)
+
 ;; Default to unified diffs
 (setq diff-switches "-u")
 
@@ -55,12 +59,6 @@
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-;; mustache
-(vendor 'mustache-mode)
-(add-to-list 'auto-mode-alist '("\\.mustache$" . tpl-mode))
-(add-to-list 'auto-mode-alist '("\\.hbs$" . tpl-mode))
-
-
 ;; haml & sass
 (require 'haml-mode)
 (vendor 'sass-mode)
@@ -69,8 +67,6 @@
 
 ;; php
 ;; (require 'php-mode)
-
-(require 'slim-mode)
 
 ;; dtrace
 (autoload 'd-mode "d-mode" () t)
@@ -121,3 +117,16 @@
 
 
 (require 'nasal-mode)
+
+
+;; highlighting
+(require 'highlight-indentation)
+(set-face-background 'highlight-indentation-current-column-face "#042D4B")
+(add-hook 'enh-ruby-mode-hook
+          (lambda () (highlight-indentation-current-column-mode)))
+
+
+;; dash support
+(autoload 'dash-at-point "dash-at-point"
+  "Search the word at point with Dash." t nil)
+(global-set-key "\C-cd" 'dash-at-point)
