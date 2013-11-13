@@ -44,6 +44,8 @@
 ;;    (setq enh-ruby-program "(path-to-ruby1.9)/bin/ruby") ; so that still works if ruby points to ruby1.8
 ;;
 
+(require 'cl) ; for cdddr, caddr
+
 ;;; Variables:
 
 (defcustom enh-ruby-program "ruby"
@@ -163,7 +165,7 @@ the value changes.
 
 ;;; Faces:
 
-(require 'color)
+(require 'color nil t)
 
 (defun erm-darken-color (name)
   (color-darken-name (face-attribute name :foreground) 20))
