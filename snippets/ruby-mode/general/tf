@@ -1,7 +1,9 @@
 # -*- mode: snippet -*-
-# name : MiniTest TestCase
-# key: tc
+# name : MiniTest TestCase File
+# key: tf
 # --
+require 'helper'
+
 class `(let ((fn (capitalize (file-name-nondirectory
                  (file-name-sans-extension
           				 (or (buffer-file-name)

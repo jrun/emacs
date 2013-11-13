@@ -1,0 +1,4 @@
+# name: /usr/bin/env ruby -wKU
+# key: bang
+# --
+#!/usr/bin/env ruby -wKU
