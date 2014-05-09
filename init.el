@@ -41,13 +41,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(css-indent-offset 2)
- '(egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode)))
+ '(custom-safe-themes (quote ("362694989b93eacbdbf641ee09cfc2411400ff713cd53e1b33986a3c97e82997" "9c8fc2c63d101dd5e5ebfb21fb56b6b4032fa9c098f598c17a408f27da9f35ea" default)))
  '(enh-ruby-bounce-deep-indent t)
  '(enh-ruby-comment-column 50)
  '(enh-ruby-deep-arglist t)
  '(enh-ruby-extra-keywords (quote ("private" "protected" "public" "raise")))
  '(enh-ruby-hanging-indent-level 2)
- '(enh-ruby-program "~/.rbenv/versions/ruby-2.0.0-p247/bin/ruby")
  '(ido-case-fold t)
  '(ido-mode (quote both) nil (ido))
  '(js2-basic-offset 2)
@@ -62,7 +61,6 @@
 
 (when (eq system-type 'darwin)
   (setq ns-command-modifier 'meta)
-  (set-frame-font "Anonymous Pro-11")
   (setq-default ispell-program-name "/usr/local/bin/aspell")
 
   ; used for copy/paste when emacs runs in the terminal
