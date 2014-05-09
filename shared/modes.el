@@ -2,13 +2,15 @@
 (vendor 'jump)
 (vendor 'json)
 
+(load "shared/git")
 (load "shared/javascript")
 (load "shared/ruby")
 (load "shared/markdown")
 (load "shared/sgml")
 (load "shared/erlang")
 (load "shared/anything")
-(load "git-commit-mode/git-commit")
+
+(vendor 'redis-cli)
 
 (require 'mouse)
 (xterm-mouse-mode t)
@@ -30,9 +32,6 @@
 (vendor 'toggle)
 (global-set-key (kbd "C-x C-t") 'toggle-buffer)
 
-;; git
-(vendor 'egg)
-
 ;; paredit
 (autoload 'paredit-mode "paredit"
   "Minor mode for pseudo-structurally editing Lisp code." t)
@@ -49,8 +48,8 @@
 ;; yasnippet
 (vendor 'yasnippet)
 (yas-global-mode 1)
-(add-to-list 'yas/snippet-dirs (concat emacsd "snippets"))
-(yas/load-directory (concat emacsd "snippets"))
+(add-to-list 'yas-snippet-dirs (concat emacsd "snippets"))
+(yas-load-directory (concat emacsd "snippets"))
 
 ;; yaml
 (vendor 'yaml-mode)
@@ -73,9 +72,9 @@
 (add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
 
 ;; activate rainbows
+(require 'rainbow-mode)
 (add-hook 'css-mode-hook
           '(lambda ()
-             (require 'rainbow-mode)
              (rainbo>w-mode 1)))
 
 ;; coffee
@@ -115,16 +114,13 @@
      (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
      (add-hook 'sql-interactive-mode-hook 'sql-set-sqli-buffer-generally)))
 
-
 (require 'nasal-mode)
-
 
 ;; highlighting
 (require 'highlight-indentation)
 (set-face-background 'highlight-indentation-current-column-face "#042D4B")
 (add-hook 'enh-ruby-mode-hook
           (lambda () (highlight-indentation-current-column-mode)))
-
 
 ;; dash support
 (autoload 'dash-at-point "dash-at-point"
