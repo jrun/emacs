@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : assert_includes
+# key: ai
+# --
+assert_includes $1, $2
+$0
