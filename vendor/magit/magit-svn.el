@@ -65,10 +65,7 @@
                        ,(concat "r" rev)
                        ,@(when branch (list branch))))))
     (if sha
-        (magit-show-commit
-         (magit-with-section (section commit sha)
-           (setf (magit-section-info section) sha)
-           sha))
+        (magit-show-commit sha)
       (user-error "Revision %s could not be mapped to a commit" rev))))
 
 ;;;###autoload
@@ -303,6 +300,9 @@ If USE-CACHE is non nil, use the cached information."
 (defun turn-on-magit-svn ()
   "Unconditionally turn on `magit-svn-mode'."
   (magit-svn-mode 1))
+
+;;;###autoload
+(custom-add-option 'magit-mode-hook #'magit-svn-mode)
 
 (provide 'magit-svn)
 ;; Local Variables:
