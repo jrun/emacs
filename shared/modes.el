@@ -58,11 +58,9 @@
           '(lambda ()
              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-;; haml & sass
-(require 'haml-mode)
-(vendor 'sass-mode)
-
-(add-to-list 'auto-mode-alist '("\\.scss$" . sass-mode))
+;; sass
+(require 'scss-mode)
+(add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
 
 ;; php
 ;; (require 'php-mode)
@@ -77,19 +75,6 @@
           '(lambda ()
              (rainbo>w-mode 1)))
 
-;; coffee
-(require 'coffee-mode)
-(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
-(add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
-
-(defun coffee-custom ()
-  "coffee-mode-hook"
-
-  ;; CoffeeScript uses two spaces.
-  (make-local-variable 'tab-width)
-  (set 'tab-width 2))
-
-(add-hook 'coffee-mode-hook 'coffee-custom)
 
 (defun my-html-mode-hook ()
   (auto-fill-mode -1))
@@ -113,8 +98,6 @@
      (sql-set-product 'postgres)
      (add-hook 'sql-interactive-mode-hook 'sqli-add-hooks)
      (add-hook 'sql-interactive-mode-hook 'sql-set-sqli-buffer-generally)))
-
-(require 'nasal-mode)
 
 ;; highlighting
 (require 'highlight-indentation)
