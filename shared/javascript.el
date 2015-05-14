@@ -1,95 +1,20 @@
-(autoload 'js2-mode "js2-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;(add-to-list 'load-path (concat emacsd "vendor/js2-mode"))
 
-;; (defun my-js2-indent-function ()
-;;   (interactive)
-;;   (save-restriction
-;;     (widen)
-;;     (let* ((inhibit-point-motion-hooks t)
-;;            (parse-status (save-excursion (syntax-ppss (point-at-bol))))
-;;            (offset (- (current-column) (current-indentation)))
-;;            (indentation (espresso--proper-indentation parse-status))
-;;            node)
+;(vendor 'js2-mode)
 
-;;       (save-excursion
+;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;(add-to-list 'auto-mode-alist '("\\.js.erb$" . js2-mode))
 
-;;         ;; I like to indent case and labels to half of the tab width
-;;         (back-to-indentation)
-;;         (if (looking-at "case\\s-")
-;;             (setq indentation (+ indentation (/ espresso-indent-level 2))))
+;(replace-auto-mode 'javascript-mode 'js2-mode)
+;(replace-auto-mode 'js-mode 'js2-mode)
 
-;;         ;; consecutive declarations in a var statement are nice if
-;;         ;; properly aligned, i.e:
-;;         ;;
-;;         ;; var foo = "bar",
-;;         ;;     bar = "foo";
-;;         (setq node (js2-node-at-point))
-;;         (when (and node
-;;                    (= js2-NAME (js2-node-type node))
-;;                    (= js2-VAR (js2-node-type (js2-node-parent node))))
-;;           (setq indentation (+ 4 indentation))))
-
-;;       (indent-line-to indentation)
-;;       (when (> offset 0) (forward-char offset)))))
-
-;; (defun my-indent-sexp ()
-;;   (interactive)
-;;   (save-restriction
-;;     (save-excursion
-;;       (widen)
-;;       (let* ((inhibit-point-motion-hooks t)
-;;              (parse-status (syntax-ppss (point)))
-;;              (beg (nth 1 parse-status))
-;;              (end-marker (make-marker))
-;;              (end (progn (goto-char beg) (forward-list) (point)))
-;;              (ovl (make-overlay beg end)))
-;;         (set-marker end-marker end)
-;;         (overlay-put ovl 'face 'highlight)
-;;         (goto-char beg)
-;;         (while (< (point) (marker-position end-marker))
-;;           ;; don't reindent blank lines so we don't set the "buffer
-;;           ;; modified" property for nothing
-;;           (beginning-of-line)
-;;           (unless (looking-at "\\s-*$")
-;;             (indent-according-to-mode))
-;;           (forward-line))
-;;         (run-with-timer 0.5 nil '(lambda(ovl)
-;;                                    (delete-overlay ovl)) ovl)))))
-
-;; (defun my-js2-mode-hook ()
-;;   (require 'espresso)
-;;   (setq espresso-indent-level 2
-;;         indent-tabs-mode nil
-;;         c-basic-offset 2)
-;;   (c-toggle-auto-state 0)
-;;   (c-toggle-hungry-state 1)
-;;   (set (make-local-variable 'indent-line-function) 'my-js2-indent-function)
-;;   (define-key js2-mode-map [(meta control |)] 'cperl-lineup)
-;;   (define-key js2-mode-map [(meta control \;)]
-;;     '(lambda()
-;;        (interactive)
-;;        (insert "/* -----[ ")
-;;        (save-excursion
-;;          (insert " ]----- */"))
-;;        ))
-;;   (define-key js2-mode-map [(return)] 'newline-and-indent)
-;;   (define-key js2-mode-map [(backspace)] 'c-electric-backspace)
-;;   (define-key js2-mode-map [(control d)] 'c-electric-delete-forward)
-;;   (define-key js2-mode-map [(control meta q)] 'my-indent-sexp)
-;;   (if (featurep 'js2-highlight-vars)
-;;     (js2-highlight-vars-mode))
-;;   (message "My JS2 hook"))
-
-;; (add-hook 'js2-mode-hook 'my-js2-mode-hook)
-
-;; ;; Get js2-mode working with yasnippet
-;; ;; Source: http://blog.tuxicity.se/emacs/javascript/js2-mode/yasnippet/2009/06/14/js2-mode-and-yasnippet.html
-;; (eval-after-load 'js2-mode
-;;   '(progn
-;;      (define-key js2-mode-map (kbd "TAB") (lambda()
-;;                                             (interactive)
-;;                                             (let ((yas/fallback-behavior 'return-nil))
-;;                                               (unless (yas/expand)
-;;                                                 (indent-for-tab-command)
-;;                                                 (if (looking-back "^\s*")
-;;                                                     (back-to-indentation))))))))
+;; (setq js2-basic-offset 2)
+;; (setq js2-mode-indent-ignore-first-tab t)
+;; (setq js2-highlight-external-variables nil)
+;; (setq js2-highlight-level 3)
+;; (setq js2-mode-show-parse-errors nil)
+;; (setq js2-mode-show-strict-warnings nil)
+;; (setq js2-bounce-indent-p t)
+;; (setq js2-pretty-multiline-declarations t)
+;; (setq js2-mirror-mode t)
+;; (setq js2-highlight-level 3)
