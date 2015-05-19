@@ -1,7 +1,7 @@
 (add-to-list 'load-path (concat emacsd "vendor/enhanced-ruby-mode"))
 
 ;; doesn't seem to work with ruby 2.0
-(setq enh-ruby-program "~/.rbenv/versions/ruby-2.1.2/bin/ruby")
+;;(setq enh-ruby-program "~/.rbenv/versions/ruby-2.1.4/bin/ruby")
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
 
