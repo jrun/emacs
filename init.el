@@ -4,6 +4,7 @@
 (add-to-list 'load-path (concat emacsd "vendor"))
 
 (push "/usr/local/bin" exec-path)
+(push (concat (substring (shell-command-to-string "rbenv root") 0 -1) "/bin") exec-path)
 
 (require 'ansi-color)
 (require 'cl)
@@ -41,7 +42,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(css-indent-offset 2)
- '(custom-safe-themes (quote ("362694989b93eacbdbf641ee09cfc2411400ff713cd53e1b33986a3c97e82997" "9c8fc2c63d101dd5e5ebfb21fb56b6b4032fa9c098f598c17a408f27da9f35ea" default)))
+ '(custom-safe-themes
+   (quote
+    ("362694989b93eacbdbf641ee09cfc2411400ff713cd53e1b33986a3c97e82997" "9c8fc2c63d101dd5e5ebfb21fb56b6b4032fa9c098f598c17a408f27da9f35ea" default)))
  '(enh-ruby-bounce-deep-indent t)
  '(enh-ruby-comment-column 50)
  '(enh-ruby-deep-arglist t)
@@ -49,11 +52,7 @@
  '(enh-ruby-hanging-indent-level 2)
  '(ido-case-fold t)
  '(ido-mode (quote both) nil (ido))
- '(js2-basic-offset 2)
- '(js2-highlight-level 3)
- '(js2-include-gears-externs nil)
- '(js2-indent-on-enter-key t)
- '(js2-mirror-mode t)
+ '(js-indent-level 2)
  '(rst-level-face-base-color "black")
  '(ruby-extra-keywords (quote ("private" "protected" "public" "raise")))
  '(ruby-hanging-indent-level 2))
