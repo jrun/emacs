@@ -73,7 +73,7 @@
 (require 'rainbow-mode)
 (add-hook 'css-mode-hook
           '(lambda ()
-             (rainbo>w-mode 1)))
+             (rainbow-mode 1)))
 
 
 (defun my-html-mode-hook ()
