@@ -1,4 +1,4 @@
-(add-to-list 'load-path (concat emacsd "vendor/git-modes"))
+;;(add-to-list 'load-path (concat emacsd "vendor/git-modes"))
 (add-to-list 'load-path (concat emacsd "vendor/magit"))
 
 (eval-after-load 'info
@@ -7,7 +7,7 @@
 
 
 (require 'magit)
-(require 'magit-blame)
+;;0(require 'magit-blame)
 
 (global-set-key (kbd "C-x v a") 'magit-blame-mode)
 (global-set-key (kbd "C-x v l") 'magit-log)
