@@ -1,5 +1,8 @@
+[![Support](https://img.shields.io/badge/get-help-blue.svg)](#getting-help)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
 [![Build Status](https://travis-ci.org/magit/magit.svg?branch=master)](https://travis-ci.org/magit/magit)
 [![Gratipay](http://img.shields.io/gratipay/magit.png)](https://www.gratipay.com/magit)
+[![Donations](https://img.shields.io/badge/please-donate-ff69b4.svg)][donations]
 
 It's Magit!  A Git Porcelain inside Emacs
 =========================================
@@ -69,8 +72,11 @@ Getting Help
 When something doesn't work as expected please see the [FAQ][faq], and
 the list of [open issues][issues], and use the search box at the top
 of the latter to find older related issues.  If everything else fails
-ask for help on the [Emacs Stackexchange][emacsstack] site or the
-[mailing list][group].
+ask for help on the [Magit Gitter channel][gitter], the
+[Emacs Stackexchange][emacsstack] site or the [mailing list][group].
+
+**Please only use the Github issue tracker for feature requests and bug
+reports - not for support requests.**
 
 Contributions
 =============
@@ -108,6 +114,7 @@ Thanks to all of you, may (the history of) the source be with you!
 [manual]:       http://magit.vc/manual/next
 
 [emacsstack]:   http://emacs.stackexchange.com/questions/tagged/magit
+[gitter]:       https://gitter.im/magit/magit
 [group]:        https://groups.google.com/forum/?fromgroups#!forum/magit
 
 [emacs]: http://www.gnu.org/software/emacs

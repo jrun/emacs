@@ -49,9 +49,10 @@
               (?W "Snapshot worktree"  magit-snapshot-worktree)
               (?l "List"               magit-stash-list)
               (?x "Save keeping index" magit-stash-keep-index)
-              (?k "Drop"               magit-stash-drop)
+              (?r "Snapshot to wipref" magit-wip-save)
               (?v "Show"               magit-stash-show)
-              (?b "Branch"             magit-stash-branch))
+              (?b "Branch"             magit-stash-branch)
+              (?k "Drop"               magit-stash-drop))
   :default-action 'magit-stash
   :max-action-columns 3)
 
@@ -201,7 +202,7 @@ When the region is active offer to drop all contained stashes."
   (if (or (and index     (magit-staged-files t))
           (and worktree  (magit-modified-files t))
           (and untracked (magit-untracked-files (eq untracked 'all))))
-      (let ((default-directory (magit-get-top-dir)))
+      (magit-with-toplevel
         (magit-stash-store message (or ref "refs/stash")
                            (magit-stash-create message index worktree untracked))
         (if (eq keep 'worktree)
@@ -233,9 +234,9 @@ When the region is active offer to drop all contained stashes."
 (defun magit-stash-create (message index worktree untracked)
   (unless (magit-rev-parse "--verify" "HEAD")
     (error "You do not have the initial commit yet"))
-  (let ((magit-git-standard-options (nconc (list "-c" "commit.gpgsign=false")
-                                           magit-git-standard-options))
-        (default-directory (magit-get-top-dir))
+  (let ((magit-git-global-arguments (nconc (list "-c" "commit.gpgsign=false")
+                                           magit-git-global-arguments))
+        (default-directory (magit-toplevel))
         (conflicts (magit-anything-unmerged-p))
         (summary (magit-stash-summary))
         (head "HEAD"))
@@ -294,7 +295,6 @@ instead of \"Stashes:\"."
     (magit-insert-section (stashes ref)
       (magit-insert-heading heading)
       (magit-git-wash (apply-partially 'magit-log-wash-log 'stash)
-        "-c" "log.date=default" ; kludge for <1.7.10.3, see #1427
         "reflog" "--format=%gd %at %gs" ref))))
 
 ;;; List Stashes
@@ -327,7 +327,6 @@ The following `format'-like specs are supported:
   (magit-insert-section (stashesbuf)
     (magit-insert-heading heading)
     (magit-git-wash (apply-partially 'magit-log-wash-log 'stash)
-      "-c" "log.date=default" ; kludge for <1.7.10.3, see #1427
       "reflog" "--format=%gd %at %gs" ref)))
 
 ;;; Show Stash

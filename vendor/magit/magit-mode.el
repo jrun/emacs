@@ -150,29 +150,31 @@ NUMBER    An integer or float.  Revert the buffers asynchronously,
          (set-default var val)
          (magit-revert-buffers-set-timer)))
 
-(defcustom magit-after-revert-hook nil
+(defcustom magit-after-revert-hook '(magit-refresh-vc-mode-line)
   "Normal hook for `magit-revert-buffer' to run after reverting."
   :package-version '(magit . "2.1.0")
   :group 'magit-modes
-  :type 'hook)
+  :type 'hook
+  :options '(magit-refresh-vc-mode-line))
 
-(defcustom magit-not-reverted-hook nil
+(defcustom magit-not-reverted-hook '(magit-refresh-vc-mode-line)
   "Normal hook for `magit-revert-buffer' to run instead of reverting.
 Run if the visited file has not changed on disk and the buffer
-therefor does not have to be reverted.  While Magit does not need
-to do anything in that case, some third-party extensions do."
+therefore does not have to be reverted."
   :package-version '(magit . "2.1.0")
   :group 'magit-modes
-  :type 'hook)
+  :type 'hook
+  :options '(magit-refresh-vc-mode-line))
 
 (defcustom magit-save-repository-buffers t
-  "Whether to save modified buffers when approriate.
+  "Whether to save file-visiting buffers when appropriate.
 
-If this is non-nil then modified buffers belonging to the current
-repository may be saved when the status buffer is being refreshed
-and before a checkout is performed.  When the value is `dontask'
-then this is done without user intervention, when it is t then
-the user has to confirm each save."
+If this is non-nil then all modified file-visiting buffers
+belonging to the current repository may be saved before running
+commands, before creating new Magit buffers, and before
+explicitly refreshing such buffers.  It this is `dontask' then
+this is done without user intervention, if it is t then the user
+has to confirm each save."
   :group 'magit
   :type '(choice (const :tag "Never" nil)
                  (const :tag "Ask" t)
@@ -252,6 +254,8 @@ the user has to confirm each save."
     (define-key map "\C-xa"  'magit-add-change-log-entry)
     (define-key map "\C-x4a" 'magit-add-change-log-entry-other-window)
     (define-key map "\C-w"   'magit-copy-as-kill)
+    (define-key map [remap evil-previous-line] 'evil-previous-visual-line)
+    (define-key map [remap evil-next-line] 'evil-next-visual-line)
     map)
   "Parent keymap for all keymaps of modes derived from `magit-mode'.")
 
@@ -310,8 +314,7 @@ the user has to confirm each save."
   "Load Magit extensions that are defined at the Git config layer."
   (dolist (ext (magit-get-all "magit.extension"))
     (let ((sym (intern (format "magit-%s-mode" ext))))
-      (when (and (fboundp sym)
-                 (not (eq sym 'magit-wip-save-mode)))
+      (when (fboundp sym)
         (funcall sym 1)))))
 
 (define-derived-mode magit-mode special-mode "Magit"
@@ -366,10 +369,12 @@ before switching to BUFFER."
         (sargs (cl-gensym "args"))
         (sbuf  (cl-gensym "buffer")))
     `(let* ((,smode ,mode)
-            (,sroot (magit-get-top-dir))
+            (,sroot (magit-toplevel))
             (,sfunc ,refresh-func)
             (,sargs (list ,@refresh-args))
             (,sbuf  (magit-mode-display-buffer ,buffer ,smode ,switch-func)))
+       (when find-file-visit-truename
+         (setq ,sroot (file-truename ,sroot)))
        (if ,sroot
            (with-current-buffer ,sbuf
              (setq default-directory ,sroot
@@ -428,7 +433,7 @@ derives from Magit mode; or else use `switch-to-buffer'."
 
 (defun magit-mode-get-buffers (&optional topdir)
   (unless topdir
-    (setq topdir (magit-get-top-dir)))
+    (setq topdir (magit-toplevel)))
   (--filter (with-current-buffer it
               (and (derived-mode-p 'magit-mode)
                    (equal default-directory topdir)))
@@ -438,7 +443,7 @@ derives from Magit mode; or else use `switch-to-buffer'."
   (if (not (string-match-p "%[ab]" format))
       (funcall (if create #'get-buffer-create #'get-buffer) format)
     (unless topdir
-      (setq topdir (magit-get-top-dir)))
+      (setq topdir (magit-toplevel)))
     (let ((name (format-spec format
                              `((?a . ,(abbreviate-file-name (or topdir "-")))
                                (?b . ,(if topdir
@@ -449,8 +454,7 @@ derives from Magit mode; or else use `switch-to-buffer'."
                      (and (or (not topdir)
                               (equal (expand-file-name default-directory)
                                      topdir))
-                          (string-match-p (format "^%s\\(?:<[0-9]+>\\)?$"
-                                                  (regexp-quote name))
+                          (string-match-p (format "^%s$" (regexp-quote name))
                                           (buffer-name))))
                    (buffer-list))
           (and create (generate-new-buffer name))))))
@@ -465,7 +469,7 @@ With a prefix argument, kill the buffer instead.
 If `magit-restore-window-configuration' is non-nil and the last
 configuration stored by `magit-mode-display-buffer' originates
 from the selected frame then restore it after burying/killing
-the buffer.  Finally reset the window configuration to nil."
+the buffer."
   (interactive "P")
   (let ((winconf magit-previous-window-configuration)
         (buffer (current-buffer))
@@ -480,6 +484,30 @@ the buffer.  Finally reset the window configuration to nil."
             (setq magit-previous-window-configuration nil)))))
     (run-hook-with-args 'magit-mode-bury-buffer-hook buffer)))
 
+(defun magit-rename-buffer (&optional newname)
+  "Rename the current buffer, so that Magit won't reuse it.
+
+By default there is only one buffer with a certain Magit mode
+per repository.  Displaying e.g. some diff will reuse the buffer
+previously used to display another diff.  If you want to have
+two buffers displaying different diffs belonging to the same
+repository, then you have to create a buffer whose name differs
+from the default name.
+
+The easiest way to do that is to use this command.  It appends
+\"<N>\" to the name of the current buffer, where N is the lowest
+available number, starting with 2, which is still available.
+
+With a prefix argument, the user can pick an arbitrary name."
+  (interactive
+   (list (and current-prefix-arg
+              (read-buffer "Rename buffer to: " (current-buffer)))))
+  (unless newname
+    (setq newname (buffer-name)))
+  (when (string-match "<[0-9]+>\\'" newname)
+    (setq newname (substring newname 0 (match-beginning 0))))
+  (rename-buffer (generate-new-buffer-name newname)))
+
 ;;; Refresh Machinery
 
 (defvar inhibit-magit-refresh nil)
@@ -489,9 +517,10 @@ the buffer.  Finally reset the window configuration to nil."
 
 Refresh the current buffer if its major mode derives from
 `magit-mode', and refresh the corresponding status buffer.
-If the `magit-revert-buffers' is in non-nil, then also
-revert all unmodified buffers that visit files being
-tracked in the current repository."
+
+If option `magit-revert-buffers' call for it, then also revert
+all unmodified buffers that visit files being tracked in the
+current repository."
   (interactive)
   (unless inhibit-magit-refresh
     (when (derived-mode-p 'magit-mode)
@@ -509,6 +538,7 @@ tracked in the current repository."
   "Refresh all buffers belonging to the current repository.
 
 Refresh all Magit buffers belonging to the current repository.
+
 Also always revert all unmodified buffers that visit files being
 tracked in the current repository."
   (interactive)
@@ -572,13 +602,13 @@ buffers that visit files being tracked in the current repository.
 When called interactively then the revert is forced."
   (interactive (list t))
   (when (or force (and magit-revert-buffers (not inhibit-magit-revert)))
-    (-when-let (topdir (magit-toplevel-safe))
+    (-when-let (topdir (magit-toplevel))
       (let* ((tracked (magit-revision-files "HEAD"))
              (buffers
               (if (> (length tracked)
                      (length (buffer-list)))
                   (--filter
-                   (let ((file (with-current-buffer it buffer-file-truename)))
+                   (let ((file (buffer-file-name it)))
                      (and file
                           (file-in-directory-p file topdir)
                           (member (file-relative-name file topdir) tracked)))
@@ -648,11 +678,30 @@ When called interactively then the revert is forced."
               (message "Reverting buffer `%s'...done" (buffer-name)))
             (run-hooks 'magit-after-revert-hook)
             (setq ret t))
-        (run-hooks 'magit-not-reverted-hook))
-      (vc-find-file-hook))
+        (run-hooks 'magit-not-reverted-hook)))
     ret))
 
-(add-hook 'git-commit-setup-hook 'magit-revert-buffers)
+(add-hook 'git-commit-setup-hook #'magit-revert-buffers)
+
+(defun magit-refresh-vc-mode-line ()
+  "Update `vc-mode' which is displayed in the mode-line.
+Like `vc-mode-line' but simpler, more efficient, and less buggy."
+  (setq vc-mode
+        (if vc-display-status
+            (let* ((rev (or (magit-get-current-branch)
+                            (magit-rev-parse "--short" "HEAD")))
+                   (msg (cl-letf (((symbol-function #'vc-working-revision)
+                                   (lambda (&rest _) rev)))
+                          (vc-default-mode-line-string 'Git buffer-file-name))))
+              (propertize
+               (concat " " msg)
+               'mouse-face 'mode-line-highlight
+               'help-echo (concat (get-text-property 0 'help-echo msg)
+                                  "\nCurrent revision: " rev
+                                  "\nmouse-1: Version Control menu")
+               'local-map vc-mode-line-map))
+          " Git"))
+  (force-mode-line-update))
 
 (defvar disable-magit-save-buffers nil)
 
@@ -681,16 +730,14 @@ is saved without asking, the user is asked about each modified
 buffer which visits a file in the current repository.  Optional
 argument (the prefix) non-nil means save all with no questions."
   (interactive "P")
-  (save-some-buffers
-   arg `(lambda ()
-          (and buffer-file-name
-               (-when-let (topdir ,(magit-get-top-dir default-directory))
-                 (and (string-prefix-p topdir buffer-file-name)
-                      ;; ^ Avoid needlessly connecting to unrelated remotes.
-                      (equal (ignore-errors
-                               (magit-get-top-dir default-directory))
-                             topdir)
-                      (magit-inside-worktree-p)))))))
+  (-when-let (topdir (magit-toplevel))
+    (save-some-buffers
+     arg (-partial (lambda (topdir)
+                     (and buffer-file-name
+                          ;; Avoid needlessly connecting to unrelated remotes.
+                          (string-prefix-p topdir buffer-file-name)
+                          (equal (ignore-errors (magit-toplevel nil t)) topdir)))
+                   topdir))))
 
 ;;; Buffer History
 

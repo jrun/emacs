@@ -188,6 +188,7 @@ See #1731."
 ;;;###autoload
 (defun magit-blame (revision file &optional args line)
   "Display edit history of FILE up to REVISION.
+
 Interactively blame the file being visited in the current buffer.
 If the buffer visits a revision of that file, then blame up to
 that revision, otherwise blame the file's full history, including
@@ -213,11 +214,10 @@ only arguments available from `magit-blame-popup' should be used.
          (if buffer-file-name
              (user-error "Buffer isn't visiting a tracked file")
            (user-error "Buffer isn't visiting a file"))))))
-  (let ((show-headings magit-blame-show-headings)
-        (default-directory (magit-get-top-dir)))
+  (magit-with-toplevel
     (if revision
         (magit-find-file revision file)
-      (find-file (expand-file-name file (magit-get-top-dir))))
+      (find-file (expand-file-name file)))
     (when line
       (setq magit-blame-recursive-p t)
       (goto-char (point-min))
@@ -225,8 +225,9 @@ only arguments available from `magit-blame-popup' should be used.
     (unless magit-blame-mode
       (setq magit-blame-cache (make-hash-table :test 'equal))
       (setq this-command 'magit-blame)
-      (magit-blame-mode 1)
-      (setq-local magit-blame-show-headings show-headings)
+      (let ((show-headings magit-blame-show-headings))
+        (magit-blame-mode 1)
+        (setq-local magit-blame-show-headings show-headings))
       (message "Blaming...")
       (let ((magit-process-popup-time -1)
             (inhibit-magit-refresh t))
@@ -437,7 +438,7 @@ then also kill the buffer."
 (defun magit-blame-toggle-headings ()
   "Show or hide blame chunk headings."
   (interactive)
-  (setq magit-blame-show-headings (not magit-blame-show-headings))
+  (setq-local magit-blame-show-headings (not magit-blame-show-headings))
   (save-excursion
     (save-restriction
       (widen)

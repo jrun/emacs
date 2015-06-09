@@ -75,6 +75,26 @@ The following `format'-like specs are supported:
   :group 'magit-diff
   :type 'string)
 
+(defcustom magit-diff-switch-buffer-function 'pop-to-buffer
+  "Function used to display and possibly select a diff buffer.
+
+By default `pop-to-buffer' is used to display the diff buffer in
+another window.  If the value is nil, then that function is also
+used, except when the current buffer is another Magit buffer.
+Then the window is reused; the diff buffer replaces the buffer
+which was previously shown.  Another function can be used, but
+that's not recommended, e.g. `switch-to-buffer' likely is not
+what you want.
+
+Note that the value of this variable is ignored when the diff
+buffer is automatically shown along side a buffer used to write
+a commit message."
+  :package-version '(magit . "2.1.0")
+  :group 'magit-diff
+  :type '(choice (function-item pop-to-buffer)
+                 (function nil)
+                 (const :tag "Context sensitive (nil)" nil)))
+
 (defcustom magit-diff-expansion-threshold 1.0
   "After how many seconds not to expand anymore diffs.
 
@@ -97,6 +117,18 @@ to have any effect"
   "Whether to highlight bodies of selected hunk sections.
 This only has an effect if `magit-diff-highlight' is a
 member of `magit-section-highlight-hook', which see."
+  :package-version '(magit . "2.1.0")
+  :group 'magit-diff
+  :type 'boolean)
+
+(defcustom magit-diff-show-lines-boundary t
+  "Whether to delimit hunk-internal region with thin lines.
+
+When a hunk-internal region (used to stage just the lines that
+fall into the region instead of the complete hunk) only covers
+context lines, then these lines are the only visual indicator
+for the region.  In character-only terminals it's not possible
+to draw thin lines."
   :package-version '(magit . "2.1.0")
   :group 'magit-diff
   :type 'boolean)
@@ -180,7 +212,7 @@ The value is a list of cons cells.  The car is a regular
 expression, and the cdr is the value that applies to repositories
 whose directory matches the regular expression.  If more than one
 element matches, then the *last* element in the list applies.
-The default value should therefor come first in the list.
+The default value should therefore come first in the list.
 
 If the value is `tabs', highlight indentation with tabs.  If the
 value is an integer, highlight indentation with at least that
@@ -213,20 +245,20 @@ The following `format'-like specs are supported:
   :type 'string)
 
 (defcustom magit-revision-show-diffstat t
-  "Whether to show diffstat in commit buffers."
+  "Whether to show diffstat in revision buffers."
   :package-version '(magit . "2.1.0")
   :group 'magit-revision
   :type 'boolean)
 
 (defcustom magit-revision-show-notes t
-  "Whether to show notes in commit buffers."
+  "Whether to show notes in revision buffers."
   :package-version '(magit . "2.1.0")
   :group 'magit-revision
   :safe 'booleanp
   :type 'boolean)
 
 (defcustom magit-revision-show-xref-buttons t
-  "Whether to show buffer history buttons in commit buffers."
+  "Whether to show buffer history buttons in revision buffers."
   :package-version '(magit . "2.1.0")
   :group 'magit-revision
   :type 'boolean)
@@ -485,12 +517,6 @@ The following `format'-like specs are supported:
     (?p "[p]atience"  "patience")
     (?h "[h]istogram" "histogram")))
 
-(defvar magit-diff-switch-buffer-function 'pop-to-buffer
-  "Function used to display and possibly select a diff buffer.
-This variable is mainly intended for internal use, allowing a
-different function to be used under certain circumstances.
-If you do change the global value this might lead to problems.")
-
 ;;;###autoload
 (defun magit-diff-dwim (&optional args files)
   "Show changes for the thing at point."
@@ -511,7 +537,7 @@ If you do change the global value this might lead to problems.")
 
 ;;;###autoload
 (defun magit-diff (range &optional args files)
-    "Show differences between two commits.
+  "Show differences between two commits.
 RANGE should be a range (A..B or A...B) but can also be a single
 commit.  If one side of the range is omitted, then it defaults
 to HEAD.  If just a commit is given, then changes in the working
@@ -574,7 +600,7 @@ While amending, invoking the command again toggles between
 showing just the new changes or all the changes that will
 be commited."
   (interactive (magit-diff-read-args t))
-  (let* ((toplevel (magit-get-top-dir))
+  (let* ((toplevel (magit-toplevel))
          (diff-buf (magit-mode-get-buffer magit-diff-buffer-name-format
                                           'magit-diff-mode toplevel)))
     (if (magit-commit-message-buffer)
@@ -585,7 +611,7 @@ be commited."
                  (or (not diff-buf)
                      (with-current-buffer diff-buf
                        (or ;; default to include last commit
-                           (not (equal (magit-get-top-dir) toplevel))
+                           (not (equal (magit-toplevel) toplevel))
                            ;; toggle to include last commit
                            (not (car magit-refresh-args))))))
             (magit-diff-while-amending args)
@@ -629,9 +655,9 @@ for a commit."
             (magit-diff-read-args t))))
   (let ((default-directory (if module
                                (file-name-as-directory
-                                (expand-file-name module (magit-get-top-dir)))
+                                (expand-file-name module (magit-toplevel)))
                              default-directory)))
-    (when (magit-git-failure "cat-file" "commit" commit)
+    (unless (magit-rev-verify commit)
       (user-error "%s is not a commit" commit))
     (-when-let (buffer (magit-mode-get-buffer
                         magit-revision-buffer-name-format
@@ -752,7 +778,7 @@ When the file is already being displayed in another window of the
 same frame, then just select that window and adjust point.  With
 a prefix argument also display in another window.
 
-If the diff shows changes in the worktree, the index, or HEAD,
+If the diff shows changes in the worktree, the index, or `HEAD',
 then visit the actual file.  Otherwise when the diff is about
 an older commit, then visit the respective blob using
 `magit-find-file'.  Also see `magit-diff-visit-file-worktree'
@@ -807,7 +833,7 @@ reliable.
 
 Also see `magit-diff-visit-file-worktree' which visits the
 respective blob, unless the diff shows changes in the worktree,
-the index, or HEAD."
+the index, or `HEAD'."
   (interactive (list (or (magit-file-at-point)
                          (user-error "No file at point"))
                      current-prefix-arg))
@@ -836,9 +862,8 @@ the index, or HEAD."
               (length (magit-section-value section))))))
 
 (defun magit-diff-visit-directory (directory &optional other-window)
-  (setq directory (file-name-as-directory (expand-file-name directory)))
-  (if (equal (magit-get-top-dir (file-name-directory directory))
-             (magit-get-top-dir))
+  (if (equal (magit-toplevel directory)
+             (magit-toplevel))
       (magit-dired-jump other-window)
     (magit-status-internal directory (if other-window
                                          'pop-to-buffer
@@ -929,24 +954,27 @@ Type \\[magit-reverse] to reverse the change at point in the worktree.
   (hack-dir-local-variables-non-file-buffer))
 
 (defun magit-diff-refresh-buffer (range &optional args files)
-  (magit-insert-section (diffbuf)
-    (magit-insert-heading
-      (if (member "--no-index" args)
-          (apply #'format "Differences between %s and %s" files)
-        (concat (if range
-                    (if (string-match-p "\\.\\." range)
-                        (format "Changes in %s" range)
-                      (format "Changes from %s to working tree" range))
-                  (if (member "--cached" args)
-                      "Staged changes"
-                    "Unstaged changes"))
-                (pcase (length files)
-                  (0)
-                  (1 (concat " in file " (car files)))
-                  (_ (concat " in files " (mapconcat #'identity files ", ")))))))
-    (magit-git-wash #'magit-diff-wash-diffs
-      "diff" range "-p" (and magit-diff-show-diffstat "--stat")
-      "--no-prefix" args "--" files)))
+  (setq header-line-format
+        (propertize
+         (if (member "--no-index" args)
+             (apply #'format " Differences between %s and %s" files)
+           (concat (if range
+                       (if (string-match-p "\\.\\." range)
+                           (format " Changes in %s" range)
+                         (format " Changes from %s to working tree" range))
+                     (if (member "--cached" args)
+                         " Staged changes"
+                       " Unstaged changes"))
+                   (pcase (length files)
+                     (0)
+                     (1 (concat " in file " (car files)))
+                     (_ (concat " in files "
+                                (mapconcat #'identity files ", "))))))
+         'face 'magit-header-line))
+    (magit-insert-section (diffbuf)
+      (magit-git-wash #'magit-diff-wash-diffs
+        "diff" range "-p" (and magit-diff-show-diffstat "--stat")
+        "--no-prefix" args "--" files)))
 
 (defvar magit-file-section-map
   (let ((map (make-sparse-keymap)))
@@ -1143,7 +1171,7 @@ section or a child thereof."
     (if range
         (let ((default-directory
                 (file-name-as-directory
-                 (expand-file-name module (magit-get-top-dir)))))
+                 (expand-file-name module (magit-toplevel)))))
           (setf (magit-section-value
                  (magit-insert-section (file module t)
                    (magit-insert-heading
@@ -1222,10 +1250,10 @@ Type \\[magit-reverse] to reverse the change at point in the worktree.
     (looking-at "^commit \\([a-z0-9]+\\)\\(?: \\(.+\\)\\)?$")
     (magit-bind-match-strings (rev refs) nil
       (magit-delete-line)
+      (setq header-line-format
+            (propertize (concat " Commit " rev) 'face 'magit-header-line))
       (magit-insert-section (headers)
-        (magit-insert-heading
-          (propertize "Commit " 'face 'magit-section-heading)
-          (propertize rev 'face 'magit-hash))
+        (magit-insert-heading (char-to-string magit-ellipsis))
         (when refs
           (magit-insert (format "References: %s\n"
                                 (magit-format-ref-labels refs))))
@@ -1256,7 +1284,8 @@ Type \\[magit-reverse] to reverse the change at point in the worktree.
         (forward-line)
         (when magit-revision-insert-related-refs
           (magit-revision-insert-related-refs rev))
-        (setq children (magit-diff-wash-diffstat))))
+        (setq children (magit-diff-wash-diffstat))
+        (forward-line)))
     (magit-diff-wash-diffs args children)))
 
 (defun magit-diff-wash-tag ()
@@ -1654,7 +1683,9 @@ are highlighted."
 (defvar magit-diff-unmarked-lines-keep-foreground t)
 
 (defun magit-diff-update-hunk-region (section)
-  (when (eq (magit-diff-scope section t) 'region)
+  (when (and (eq (magit-diff-scope section t) 'region)
+             (not (and (eq this-command 'mouse-drag-region)
+                       (eq (mark) (point)))))
     (let ((sbeg (magit-section-start section))
           (cbeg (magit-section-content section))
           (rbeg (save-excursion (goto-char (region-beginning))
@@ -1676,14 +1707,15 @@ are highlighted."
         (ov sbeg cbeg 'face 'magit-diff-lines-heading
             'display (concat (magit-diff-hunk-region-header section) "\n"))
         (ov cbeg rbeg 'face face 'priority 2)
-        (ov rbeg (1+ rbeg) 'before-string
-            (propertize (concat (propertize "\s" 'display '(space :height (1)))
-                                (propertize "\n" 'line-height t))
-                        'face 'magit-diff-lines-boundary))
-        (ov rend (1+ rend) 'after-string
-            (propertize (concat (propertize "\s" 'display '(space :height (1)))
-                                (propertize "\n" 'line-height t))
-                        'face 'magit-diff-lines-boundary))
+        (when (and (window-system) magit-diff-show-lines-boundary)
+          (ov rbeg (1+ rbeg) 'before-string
+              (propertize (concat (propertize "\s" 'display '(space :height (1)))
+                                  (propertize "\n" 'line-height t))
+                          'face 'magit-diff-lines-boundary))
+          (ov rend (1+ rend) 'after-string
+              (propertize (concat (propertize "\s" 'display '(space :height (1)))
+                                  (propertize "\n" 'line-height t))
+                          'face 'magit-diff-lines-boundary)))
         (ov (1+ rend) send 'face face 'priority 2)))))
 
 ;;; Diff Extract

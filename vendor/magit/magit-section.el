@@ -177,7 +177,8 @@ the beginning of the current section."
        ((and (= (point) (1- (magit-section-end section)))
              (setq children (magit-section-children section)))
         (magit-section-goto (car (last children))))
-       ((not (= (point) (magit-section-start section)))
+       ((and (magit-section-parent section)
+             (not (= (point) (magit-section-start section))))
         (magit-section-goto section))
        (t
         (let ((prev (car (magit-section-siblings section 'prev))))
@@ -590,6 +591,11 @@ at point."
 (defvar magit-insert-section--parent  nil "For internal use only.")
 (defvar magit-insert-section--oldroot nil "For internal use only.")
 
+(defvar magit-insert-section-hook nil
+  "Hook run after `magit-insert-section's BODY.
+Avoid using this hook and only ever do so if you know
+what you are doing and are sure there is no other way.")
+
 (defmacro magit-insert-section (&rest args)
   "Insert a section at point.
 
@@ -656,6 +662,7 @@ anything this time around.
                       (setq magit-root-section ,s))))))
          (catch 'cancel-section
            ,@(cdr args)
+           (run-hooks 'magit-insert-section-hook)
            (magit-insert-child-count ,s)
            (set-marker-insertion-type (magit-section-start ,s) t)
            (let* ((end (setf (magit-section-end ,s) (point-marker)))
@@ -726,6 +733,28 @@ insert a newline character if necessary."
   (unless (bolp)
     (insert ?\n))
   (setf (magit-section-content magit-insert-section--current) (point-marker)))
+
+(defvar magit-insert-headers-hook nil "For internal use only.")
+
+(defun magit-insert-headers (hooks)
+  (let ((magit-insert-section-hook
+         (cons 'magit-insert-remaining-headers
+               (if (listp magit-insert-section-hook)
+                   magit-insert-section-hook
+                 (list magit-insert-section-hook))))
+        (magit-insert-headers-hook hooks)
+        wrapper)
+    (while (and (setq wrapper (pop magit-insert-headers-hook))
+                (= (point) (point-min)))
+      (funcall wrapper))))
+
+(defun magit-insert-remaining-headers ()
+  (if (= (point) (point-min))
+      (magit-cancel-section)
+    (magit-insert-heading)
+    (remove-hook 'magit-insert-section-hook 'magit-insert-remaining-headers)
+    (mapc #'funcall magit-insert-headers-hook)
+    (insert "\n")))
 
 (defun magit-insert-child-count (section)
   "Modify SECTION's heading to contain number of child sections.
@@ -824,7 +853,8 @@ found in STRING."
         (restore-buffer-modified-p nil)
         (unless (eq magit-section-highlighted-section section)
           (setq magit-section-highlighted-section
-                (unless (magit-section-hidden section) section)))))))
+                (unless (magit-section-hidden section) section))))
+      (setq deactivate-mark nil))))
 
 (defun magit-section-highlight (section selection)
   "Highlight SECTION and if non-nil all SELECTION.
@@ -848,7 +878,7 @@ If SELECTION is non-nil then it is a list of sections selected by
 the region.  The headings of these sections are then highlighted.
 
 This is a fallback for people who don't want to highlight the
-current section and therefor removed `magit-section-highlight'
+current section and therefore removed `magit-section-highlight'
 from `magit-section-highlight-hook'.
 
 This function is necessary to ensure that a representation of
@@ -875,9 +905,9 @@ invisible."
     (--if-let (magit-get-section ident)
         (let ((start (magit-section-start it)))
           (goto-char start)
-          (unless (eq section magit-root-section)
+          (unless (eq it magit-root-section)
             (ignore-errors
-              (forward-line (1- line))
+              (forward-line line)
               (forward-char char))
             (unless (eq (magit-current-section) it)
               (goto-char start))))

@@ -102,9 +102,9 @@ an error while using those is harder to recover from."
   :default-action 'magit-commit))
 
 (defun magit-commit-message-buffer ()
-  (let ((topdir (magit-get-top-dir)))
+  (let ((topdir (magit-toplevel)))
     (--first (equal topdir (with-current-buffer it
-                             (and git-commit-mode (magit-get-top-dir))))
+                             (and git-commit-mode (magit-toplevel))))
              (append (buffer-list (selected-frame))
                      (buffer-list)))))
 
@@ -227,7 +227,8 @@ depending on the value of option `magit-commit-squash-confirm'.
                                      (concat option "=" commit) args)
           commit)
       (magit-log-select
-        `(lambda (commit) (,fn commit (list ,@args))))
+        `(lambda (commit) (,fn commit (list ,@args)))
+        "Type %p on the commit to squash/fixup into it,")
       (when (magit-diff-auto-show-p 'log-select)
         (let ((magit-diff-switch-buffer-function 'display-buffer))
           (magit-diff-staged))))))
@@ -251,6 +252,8 @@ depending on the value of option `magit-commit-squash-confirm'.
    ((and (file-exists-p (magit-git-dir "MERGE_MSG"))
          (not (magit-anything-unstaged-p)))
     (or args (list "--")))
+   ((not (magit-anything-unstaged-p))
+    (user-error "Nothing staged (or unstaged)"))
    (magit-commit-ask-to-stage
     (when (magit-diff-auto-show-p 'stage-all)
       (magit-diff-unstaged))
@@ -318,7 +321,7 @@ actually insert the entry."
       (with-current-buffer buf
         (goto-char pos)
         (funcall magit-commit-add-log-insert-function log
-                 (file-relative-name buffer-file-name (magit-get-top-dir))
+                 (file-relative-name buffer-file-name (magit-toplevel))
                  (add-log-current-defun))))))
 
 (defun magit-commit-add-log-insert (buffer file defun)

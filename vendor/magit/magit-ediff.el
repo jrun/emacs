@@ -221,11 +221,15 @@ mind at all, then it asks the user for a command to run."
                 (unpulled (setq revA (magit-get-current-branch)
                                 revB (magit-get-tracked-branch)
                                 range (concat revA ".." revB)))
-                (t (setq command
-                         (cond ((not file) nil)
-                               ((magit-anything-unmerged-p file)
-                                'magit-ediff-resolve)
-                               (t 'magit-ediff-stage)))))))
+                ((staged unstaged)
+                 (setq command (if (magit-anything-unmerged-p)
+                                   'magit-ediff-resolve
+                                 'magit-ediff-stage)))
+                (t
+                 (setq command (cond ((not file) nil)
+                                     ((magit-anything-unmerged-p file)
+                                      'magit-ediff-resolve)
+                                     (t 'magit-ediff-stage)))))))
        (cond ((not command)
               (call-interactively
                (magit-read-char-case
@@ -240,6 +244,56 @@ mind at all, then it asks the user for a command to run."
               (funcall command file))
              (t
               (call-interactively command)))))))
+
+;;;###autoload
+(defun magit-ediff-show-staged (file)
+  "Show staged changes using Ediff.
+This only allows looking at the changes; to stage, unstage,
+and discard changes using Ediff, use `magit-ediff-stage'."
+  (interactive
+   (list (magit-completing-read "Show staged changes for file" nil
+                                (magit-tracked-files) nil nil nil
+                                (magit-current-file))))
+  (let ((conf (current-window-configuration))
+        (bufA (magit-get-revision-buffer "HEAD" file))
+        (bufB (get-buffer (concat file ".~{index}~"))))
+    (ediff-buffers
+     (or bufA (magit-find-file-noselect "HEAD" file))
+     (or bufB (magit-find-file-index-noselect file t))
+     `((lambda ()
+         (add-hook
+          'ediff-quit-hook
+          (lambda ()
+            ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
+            ,@(unless bufB '((ediff-kill-buffer-carefully ediff-buffer-B)))
+            (set-window-configuration ,conf))
+          nil t)))
+     'ediff-buffers)))
+
+;;;###autoload
+(defun magit-ediff-show-unstaged (file)
+  "Show unstaged changes using Ediff.
+This only allows looking at the changes; to stage, unstage,
+and discard changes using Ediff, use `magit-ediff-stage'."
+  (interactive
+   (list (magit-completing-read "Show unstaged changes for file" nil
+                                (magit-tracked-files) nil nil nil
+                                (magit-current-file))))
+  (let ((conf (current-window-configuration))
+        (bufA (get-buffer (concat file ".~{index}~")))
+        (bufB (get-file-buffer file)))
+    (ediff-buffers
+     (or bufA (magit-find-file-index-noselect file t))
+     (or bufB (find-file-noselect file))
+     `((lambda ()
+         (add-hook
+          'ediff-quit-hook
+          (lambda ()
+            ,@(unless bufA '((ediff-kill-buffer-carefully ediff-buffer-A)))
+            ,@(unless bufB '((ediff-kill-buffer-carefully ediff-buffer-B)))
+            (set-window-configuration ,conf))
+          nil t)))
+     'ediff-buffers)))
 
 ;;; magit-ediff.el ends soon
 (provide 'magit-ediff)

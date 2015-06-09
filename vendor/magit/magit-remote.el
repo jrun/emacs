@@ -121,7 +121,7 @@ then read the remote."
 
 ;;;###autoload
 (defun magit-fetch-all (&optional args)
-  "Fetch from another repository."
+  "Fetch from all configured remotes."
   (interactive (list (magit-fetch-arguments)))
   (magit-run-git-async-no-revert "remote" "update" args))
 
@@ -139,7 +139,7 @@ then read the remote."
 
 ;;;###autoload
 (defun magit-pull-current (remote branch &optional args)
-  "Fetch from another repository and merge into current branch."
+  "Fetch and merge into current branch."
   (interactive (magit-pull-read-args t))
   (magit-run-git-async "pull" args remote branch))
 
@@ -162,8 +162,7 @@ then read the remote."
   "Popup console for push commands."
   'magit-commands
   :man-page "git-push"
-  :switches '((?f "Force safely"  "--force-with-lease") ; >= 1.8.5
-              (?F "Force"         "--force")
+  :switches '((?f "Force"         "--force-with-lease")
               (?h "Disable hooks" "--no-verify")
               (?d "Dry run"       "--dry-run")
               (?u "Set upstream"  "--set-upstream"))
