@@ -2,23 +2,19 @@
 (vendor 'jump)
 (vendor 'json)
 
+(load "shared/helm")
 (load "shared/git")
 (load "shared/javascript")
 (load "shared/ruby")
 (load "shared/markdown")
 (load "shared/sgml")
 (load "shared/erlang")
-(load "shared/anything")
 
 (vendor 'redis-cli)
 
 (require 'mouse)
 (xterm-mouse-mode t)
 (defun track-mouse (e))
-
-;; ag
-(add-to-list 'load-path (concat emacsd "vendor/ag.el"))
-(require 'ag)
 
 ;; Default to unified diffs
 (setq diff-switches "-u")
