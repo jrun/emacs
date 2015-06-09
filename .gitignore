@@ -18,3 +18,8 @@ tramp
 *-desktop
 eshell
 !vendor/js2.elc
+.emacs.desktop*
+elpa
+ido.last
+recentf
+semanticdb
