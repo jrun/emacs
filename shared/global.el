@@ -34,7 +34,7 @@
 (show-paren-mode 1)
 
 ; Spell check
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;(add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 
 ; Prevent messages about closing buffer
