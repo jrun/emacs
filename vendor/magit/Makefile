@@ -20,13 +20,7 @@ endif
 
 BATCH = $(EMACSBIN) -batch -Q $(LOAD_PATH)
 
-VERSION=$(shell \
-  test -e .git\
-  && git describe --tags --dirty 2> /dev/null\
-  || $(BATCH) --eval "(progn\
-  (fset 'message (lambda (&rest _)))\
-  (load-file \"magit-version.el\")\
-  (princ magit-version))")
+VERSION=1.0
 
 .PHONY: help magit-version.el AUTHORS.md \
 	install-lisp install-docs test test-interactive clean clean-docs \
