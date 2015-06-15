@@ -4,6 +4,7 @@
 
 (load "shared/ag")
 (load "shared/helm")
+(load "shared/projectile")
 (load "shared/git")
 (load "shared/javascript")
 (load "shared/ruby")
