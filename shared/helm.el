@@ -25,7 +25,7 @@
 (global-set-key (kbd "M-y")     'helm-show-kill-ring)
 (global-set-key (kbd "C-x b")   'helm-mini)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "C-x \\")  'helm-ag-project-root)
+(global-set-key (kbd "C-x |")  'helm-ag-project-root)
 
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 (define-key helm-map (kbd "C-i")   'helm-execute-persistent-action)   ; make TAB works in terminal

@@ -2,6 +2,7 @@
 (vendor 'jump)
 (vendor 'json)
 
+(load "shared/ag")
 (load "shared/helm")
 (load "shared/git")
 (load "shared/javascript")
