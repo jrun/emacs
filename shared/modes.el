@@ -2,15 +2,22 @@
 (vendor 'jump)
 (vendor 'json)
 
+;; elixir
+(add-to-list 'load-path (concat emacsd "vendor/company-mode"))
+(add-to-list 'load-path (concat emacsd "vendor/alchemist"))
+(require 'elixir-mode)
+(require 'alchemist)
+
+(load "shared/git")
 (load "shared/ag")
 (load "shared/helm")
 (load "shared/projectile")
-(load "shared/git")
 (load "shared/javascript")
 (load "shared/ruby")
 (load "shared/markdown")
 (load "shared/sgml")
 (load "shared/erlang")
+
 
 (vendor 'redis-cli)
 
