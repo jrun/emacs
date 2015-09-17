@@ -2,11 +2,9 @@
 ;; (add-hook 'sgml-mode-hook 'zencoding-mode)
 ;; (setq-default sgml-basic-offset 2)
 
-
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 
 (defun web-mode-hook ()
   "Hooks for Web mode."

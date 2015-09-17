@@ -60,12 +60,9 @@
 (require 'scss-mode)
 (add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
 
-;; php
-;; (require 'php-mode)
-
-;; dtrace
-(autoload 'd-mode "d-mode" () t)
-(add-to-list 'auto-mode-alist '("\\.d\\'" . d-mode))
+;; coffee
+(require 'coffee-mode)
+(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
 
 ;; activate rainbows
 (require 'rainbow-mode)

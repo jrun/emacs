@@ -9,7 +9,6 @@
 (add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.ru$" . enh-ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.sake\\'" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("Capfile$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("Guardfile$" . enh-ruby-mode))
@@ -18,10 +17,6 @@
 (add-to-list 'auto-mode-alist '("pryrc$" . enh-ruby-mode))
 
 (add-to-list 'completion-ignored-extensions ".rbc")
-
-;; treetop
-(vendor 'treetop-mode)
-(add-to-list 'auto-mode-alist '("\\.treetop\\'" . treetop-mode))
 
 ; inferior
 (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
