@@ -1,10 +1,9 @@
-;;; git-commit.el --- edit Git commit messages  -*- lexical-binding: t; -*-
+;;; git-commit.el --- Edit Git commit messages  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2010-2015  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Authors: Jonas Bernoulli <jonas@bernoul.li>
 ;;	Sebastian Wiesner <lunaryorn@gmail.com>
@@ -12,8 +11,9 @@
 ;;	Marius Vollmer <marius.vollmer@gmail.com>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
+;; Package-Requires: ((emacs "24.4") (dash "2.11.0") (with-editor "20150903"))
+;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
-;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
 
@@ -101,7 +101,7 @@
 ;; files.
 
 ;; Finally this package highlights style errors, like lines that are
-;; to long, or when the second line is not empty.  It may even nag you
+;; too long, or when the second line is not empty.  It may even nag you
 ;; when you attempt to finish the commit without having fixed these
 ;; issues.  Some people like that nagging, I don't, so you'll have to
 ;; enable it.  Which brings me to the last point.  Like any
@@ -132,6 +132,7 @@
   :prefix "git-commit-"
   :group 'tools)
 
+;;;###autoload
 (define-minor-mode global-git-commit-mode
   "Edit Git commit messages.
 This global mode arranges for `git-commit-setup' to be called
@@ -158,6 +159,12 @@ The major mode configured here is turned on by the minor mode
   :type '(choice (function-item text-mode)
                  (const :tag "No major mode")))
 
+(unless (find-lisp-object-file-name 'git-commit-setup-hook 'defvar)
+  (add-hook 'git-commit-setup-hook 'with-editor-usage-message)
+  (add-hook 'git-commit-setup-hook 'git-commit-propertize-diff)
+  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill)
+  (add-hook 'git-commit-setup-hook 'git-commit-setup-changelog-support)
+  (add-hook 'git-commit-setup-hook 'git-commit-save-message))
 (defcustom git-commit-setup-hook
   '(git-commit-save-message
     git-commit-setup-changelog-support
@@ -422,18 +429,17 @@ finally check current non-comment text."
   (flyspell-buffer))
 
 (defun git-commit-flyspell-verify ()
-  (not (memq (get-text-property (point) 'face)
-             '(font-lock-comment-face     font-lock-comment-delimiter-face
-               git-commit-comment-branch  git-commit-comment-detached
-               git-commit-comment-heading git-commit-comment-file
-               git-commit-comment-action  git-commit-pseudo-header
-               git-commit-known-pseudo-header))))
+  (not (= (char-after (line-beginning-position)) ?#)))
 
 (defun git-commit-finish-query-functions (force)
   (run-hook-with-args-until-failure
    'git-commit-finish-query-functions force))
 
 (defun git-commit-check-style-conventions (force)
+  "Check for violations of certain basic style conventions.
+For each violation ask the user if she wants to proceed anyway.
+This makes sure the summary line isn't too long and that the
+second line is empty."
   (or force
       (save-excursion
         (goto-char (point-min))
@@ -564,7 +570,7 @@ With a numeric prefix ARG, go forward ARG comments."
              (insert ?\n)))
           (t
            (while (re-search-backward (concat "^" comment-start) nil t))
-           (unless (looking-back "\n\n")
+           (unless (looking-back "\n\n" nil)
              (insert ?\n))
            (insert header ?\n)))
     (unless (or (eobp) (= (char-after) ?\n))
@@ -633,7 +639,10 @@ With a numeric prefix ARG, go forward ARG comments."
                 (delete-region (point) (point-max)))))
            (diff-mode)
            (let (font-lock-verbose font-lock-support-mode)
-             (font-lock-fontify-buffer))
+             (if (fboundp 'font-lock-flush)
+                 (font-lock-flush)
+               (with-no-warnings
+                 (font-lock-fontify-buffer))))
            (let (next (pos (point-min)))
              (while (setq next (next-single-property-change pos 'face))
                (put-text-property pos next 'font-lock-face
@@ -642,19 +651,6 @@ With a numeric prefix ARG, go forward ARG comments."
            (buffer-string)))))))
 
 ;;; git-commit.el ends soon
-
-(define-obsolete-face-alias 'git-commit-summary-face 'git-commit-summary "1.1.0")
-(define-obsolete-face-alias 'git-commit-overlong-summary-face 'git-commit-overlong-summary "1.1.0")
-(define-obsolete-face-alias 'git-commit-nonempty-second-line-face 'git-commit-nonempty-second-line "1.1.0")
-(define-obsolete-face-alias 'git-commit-note-face 'git-commit-note "1.1.0")
-(define-obsolete-face-alias 'git-commit-pseudo-header-face 'git-commit-pseudo-header "1.1.0")
-(define-obsolete-face-alias 'git-commit-known-pseudo-header-face 'git-commit-known-pseudo-header "1.1.0")
-(define-obsolete-face-alias 'git-commit-branch-face 'git-commit-comment-branch "1.1.0")
-(define-obsolete-face-alias 'git-commit-no-branch-face 'git-commit-comment-detached "1.1.0")
-(define-obsolete-face-alias 'git-commit-comment-heading-face 'git-commit-comment-heading "1.1.0")
-(define-obsolete-face-alias 'git-commit-comment-file-face 'git-commit-comment-file "1.1.0")
-(define-obsolete-face-alias 'git-commit-comment-action-face 'git-commit-comment-action "1.1.0")
-
 (provide 'git-commit)
 ;; Local Variables:
 ;; indent-tabs-mode: nil

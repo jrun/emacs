@@ -1,10 +1,9 @@
 ;;; magit-apply.el --- apply Git diffs
 
-;; Copyright (C) 2010-2015  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -35,6 +34,8 @@
 (require 'magit-diff)
 (require 'magit-wip)
 
+;; For `magit-apply'
+(declare-function magit-am-popup 'magit-sequence)
 ;; For `magit-discard-files'
 (declare-function magit-checkout-stage 'magit)
 (declare-function magit-checkout-read-stage 'magit)
@@ -60,11 +61,18 @@ With a prefix argument and if necessary, attempt a 3-way merge."
     (pcase (list (magit-diff-type) (magit-diff-scope))
       (`(,(or `unstaged `staged) ,_)
        (user-error "Change is already in the working tree"))
-      (`(,_ region) (magit-apply-region it args))
-      (`(,_   hunk) (magit-apply-hunk it args))
-      (`(,_   file) (magit-apply-diff it args)))))
+      (`(untracked file) (magit-am-popup))
+      (`(,_      region) (magit-apply-region it args))
+      (`(,_        hunk) (magit-apply-hunk it args))
+      (`(,_        file) (magit-apply-diff it args)))))
 
 (defun magit-apply-diff (section &rest args)
+  (magit-section-when [file diffstat]
+    (--if-let (magit-get-section
+               (append `((file . ,(magit-section-value section)))
+                       (magit-section-ident magit-root-section)))
+        (setq section it)
+      (error "Cannot get required diff headers")))
   (magit-apply-patch section args
                      (concat (magit-diff-file-header section)
                              (buffer-substring (magit-section-content section)
@@ -79,7 +87,13 @@ With a prefix argument and if necessary, attempt a 3-way merge."
                                                (magit-section-end section)))))
 
 (defun magit-apply-region (section &rest args)
-  (magit-apply-patch section args (magit-diff-hunk-region-patch section args)))
+  (unless (magit-diff-context-p)
+    (user-error "Not enough context to apply region.  Increase the context"))
+  (when (string-match "^diff --cc" (magit-section-parent-value section))
+    (user-error "Cannot un-/stage resolution hunks.  Stage the whole file"))
+  (magit-apply-patch section args
+                     (concat (magit-diff-file-header section)
+                             (magit-diff-hunk-region-patch section args))))
 
 (defvar magit-apply-inhibit-wip nil)
 
@@ -96,7 +110,7 @@ With a prefix argument and if necessary, attempt a 3-way merge."
     (with-temp-buffer
       (insert patch)
       (magit-run-git-with-input nil
-        "apply" args
+        "apply" args "-p0"
         (unless (magit-diff-context-p) "--unidiff-zero")
         "--ignore-space-change" "-"))
     (when (and magit-wip-after-apply-mode (not magit-apply-inhibit-wip))
@@ -137,7 +151,7 @@ requiring confirmation."
                (magit-completing-read "Stage file" choices
                                       nil t nil nil default)
              default))))
-  (let ((default-directory (magit-toplevel)))
+  (magit-with-toplevel
     (magit-stage-1 nil (list file))))
 
 ;;;###autoload
@@ -152,12 +166,13 @@ ignored) files.
                                   (magit-confirm 'stage-all-changes))
                         (user-error "Abort"))
                       (list current-prefix-arg)))
-  (let ((default-directory (magit-toplevel)))
+  (magit-with-toplevel
     (magit-stage-1 (if all "--all" "-u"))))
 
 (defun magit-stage-1 (arg &optional files)
   (magit-wip-commit-before-change files " before stage")
-  (magit-run-git-no-revert "add" arg (if files (cons "--" files) ".")))
+  (magit-run-git-no-revert "add" arg (if files (cons "--" files) "."))
+  (magit-wip-commit-after-apply files " after stage"))
 
 (defun magit-stage-untracked ()
   (let* ((section (magit-current-section))
@@ -179,7 +194,8 @@ ignored) files.
           (goto-char (magit-section-start
                       (magit-get-section
                        `((file . ,repo) (untracked) (status)))))
-          (call-interactively 'magit-submodule-add))))))
+          (call-interactively 'magit-submodule-add))))
+    (magit-wip-commit-after-apply files " after stage")))
 
 ;;;; Unstage
 
@@ -214,14 +230,15 @@ without requiring confirmation."
                (magit-completing-read "Unstage file" choices
                                       nil t nil nil default)
              default))))
-  (let ((default-directory (magit-toplevel)))
+  (magit-with-toplevel
     (magit-unstage-1 (list file))))
 
 (defun magit-unstage-1 (files)
   (magit-wip-commit-before-change files " before unstage")
   (if (magit-no-commit-p)
       (magit-run-git "rm" "--cached" "--" files)
-    (magit-run-git "reset" "HEAD" "--" files)))
+    (magit-run-git "reset" "HEAD" "--" files))
+  (magit-wip-commit-after-apply files " after unstage"))
 
 ;;;###autoload
 (defun magit-unstage-all ()
@@ -231,7 +248,8 @@ without requiring confirmation."
                  (not (magit-untracked-files)))
             (magit-confirm 'unstage-all-changes))
     (magit-wip-commit-before-change nil " before unstage")
-    (magit-run-git "reset" "HEAD" "--")))
+    (magit-run-git "reset" "HEAD" "--")
+    (magit-wip-commit-after-apply nil " after unstage")))
 
 ;;;; Discard
 
@@ -379,37 +397,38 @@ without requiring confirmation."
 
 ;;;; Reverse
 
-(defun magit-reverse ()
+(defun magit-reverse (&rest args)
   "Reverse the change at point in the working tree."
-  (interactive)
+  (interactive (and current-prefix-arg (list "--3way")))
   (--when-let (magit-current-section)
     (pcase (list (magit-diff-type) (magit-diff-scope))
       (`(untracked ,_) (user-error "Cannot reverse untracked changes"))
       (`(unstaged  ,_) (user-error "Cannot reverse unstaged changes"))
-      (`(,_      list) (magit-reverse-files (magit-section-children it)))
-      (`(,_     files) (magit-reverse-files (magit-region-sections)))
-      (`(,_      file) (magit-reverse-files (list it)))
-      (_               (magit-reverse-apply it)))))
+      (`(,_      list) (magit-reverse-files (magit-section-children it) args))
+      (`(,_     files) (magit-reverse-files (magit-region-sections) args))
+      (`(,_      file) (magit-reverse-files (list it) args))
+      (_               (magit-reverse-apply it args)))))
 
-(defun magit-reverse-apply (section)
+(defun magit-reverse-apply (section args)
   (let ((scope (magit-diff-scope section)))
     (when (or (eq scope 'file)
               (magit-confirm 'reverse (format "Reverse %s" scope)))
-      (funcall (pcase scope
-                 (`region 'magit-apply-region)
-                 (`hunk   'magit-apply-hunk)
-                 (`file   'magit-apply-diff))
-               section "--reverse"))))
+      (apply (pcase scope
+               (`region 'magit-apply-region)
+               (`hunk   'magit-apply-hunk)
+               (`file   'magit-apply-diff))
+             section "--reverse" args))))
 
-(defun magit-reverse-files (sections)
-  (cl-destructuring-bind (binaries files)
+(defun magit-reverse-files (sections args)
+  (cl-destructuring-bind (binaries sections)
       (let ((binaries (magit-staged-binary-files)))
         (--separate (member (magit-section-value it) binaries) sections))
-    (when (magit-confirm-files 'reverse (mapcar #'magit-section-value files))
-      (magit-wip-commit-before-change files " before reverse")
-      (let ((magit-apply-inhibit-wip t))
-        (mapc #'magit-reverse-apply files))
-      (magit-wip-commit-after-apply files " after reverse"))
+    (let ((files (mapcar #'magit-section-value sections)))
+      (when (magit-confirm-files 'reverse files)
+        (magit-wip-commit-before-change files " before reverse")
+        (let ((magit-apply-inhibit-wip t))
+          (--each sections (magit-reverse-apply it args)))
+        (magit-wip-commit-after-apply files " after reverse")))
     (when binaries
       (user-error "Cannot reverse binary files"))))
 

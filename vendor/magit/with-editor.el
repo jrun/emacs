@@ -1,15 +1,15 @@
-;;; with-editor.el --- use the Emacsclient as $EDITOR -*- lexical-binding: t -*-
+;;; with-editor.el --- Use the Emacsclient as $EDITOR -*- lexical-binding: t -*-
 
-;; Copyright (C) 2014-2015  The Magit Project Developers
+;; Copyright (C) 2014-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.5") (dash "2.10.0"))
+;; Package-Requires: ((emacs "24.4") (async "20150812") (dash "2.11.0"))
+;; Keywords: tools
 ;; Homepage: https://github.com/magit/magit
 
 ;; This file is not part of GNU Emacs.
@@ -40,7 +40,7 @@
 ;; export `$EDITOR' making sure the executed command uses the current
 ;; Emacs instance as "the editor".  With a prefix argument these
 ;; commands prompt for an alternative environment variable such as
-;; `$GIT_EDITOR'.  To always use these variants add this to you init
+;; `$GIT_EDITOR'.  To always use these variants add this to your init
 ;; file:
 ;;
 ;;   (define-key (current-global-map)
@@ -84,6 +84,11 @@
 (require 'tramp)
 (require 'tramp-sh nil t)
 
+(and (require 'async-bytecomp nil t)
+     (memq 'magit (bound-and-true-p async-bytecomp-allowed-packages))
+     (fboundp 'async-bytecomp-package-mode)
+     (async-bytecomp-package-mode 1))
+
 (eval-when-compile
   (progn (require 'dired nil t)
          (require 'eshell nil t)
@@ -121,7 +126,7 @@ please see https://github.com/magit/magit/wiki/Emacsclient."))
           (lambda (v) (cl-mapcar (lambda (e) (concat v e)) exec-suffixes))
           (nconc (cl-mapcon (lambda (v)
                               (setq v (mapconcat #'identity (reverse v) "."))
-                              (list v (concat "-" v)))
+                              (list v (concat "-" v) (concat ".emacs" v)))
                             (reverse version-lst))
                  (list "")))
          (lambda (exec)
@@ -158,7 +163,7 @@ please see https://github.com/magit/magit/wiki/Emacsclient."))
   :type '(choice (string :tag "Executable")
                  (const  :tag "Don't use Emacsclient" nil)))
 
-(defcustom with-editor-looping-editor "\
+(defcustom with-editor-sleeping-editor "\
 sh -c '\
 echo \"WITH-EDITOR: $$ OPEN $0\"; \
 sleep 604800 & sleep=$!; \
@@ -223,10 +228,7 @@ REGEXP are selected using FUNCTION instead of the default in
 
 Note that when a package adds an entry here then it probably
 has a reason to disrespect `server-window' and it likely is
-not a good idea to change such entries.  The `git-commit' and
-`git-rebase' packages do no add entries themselves but loading
-`magit' does add entries for the files handled by these packages.
-Don't change these, or Magit will get confused.")
+not a good idea to change such entries.")
 
 ;;; Mode Commands
 
@@ -293,7 +295,11 @@ Don't change these, or Magit will get confused.")
              (kill-buffer)))
           (t
            (save-buffer)
-           (if clients (server-edit) (kill-buffer))))
+           (if clients
+               ;; Don't use `server-edit' because we do not want to show
+               ;; another buffer belonging to another client.  See #2197.
+               (server-done)
+             (kill-buffer))))
     (when pid
       (let ((default-directory dir))
         (process-file "kill" nil nil nil
@@ -355,14 +361,14 @@ Modify the `process-environment' for processes started in BODY,
 instructing them to use the Emacsclient as $EDITOR.  If optional
 ENVVAR is provided then bind that environment variable instead.
 \n(fn [ENVVAR] BODY...)"
-  (declare (indent defun))
+  (declare (indent defun) (debug (body)))
   `(let ((with-editor--envvar ,(if (stringp (car body))
                                    (pop body)
                                  '(or with-editor--envvar "EDITOR")))
          (process-environment process-environment))
      (if (or (not with-editor-emacsclient-executable)
              (file-remote-p default-directory))
-         (setenv with-editor--envvar with-editor-looping-editor)
+         (setenv with-editor--envvar with-editor-sleeping-editor)
        ;; Make sure server-use-tcp's value is valid.
        (unless (featurep 'make-network-process '(:family local))
          (setq server-use-tcp t))
@@ -385,7 +391,7 @@ ENVVAR is provided then bind that environment variable instead.
          (setenv "EMACS_SERVER_FILE"
                  (expand-file-name server-name server-auth-dir)))
        ;; As last resort fallback to the looping editor.
-       (setenv "ALTERNATE_EDITOR" with-editor-looping-editor))
+       (setenv "ALTERNATE_EDITOR" with-editor-sleeping-editor))
      ,@body))
 
 (defun with-editor-server-window ()
@@ -420,7 +426,7 @@ the appropriate editor environment variable."
         (unless (equal program "env")
           (push prog args)
           (setq prog "env"))
-        (push (concat with-editor--envvar "=" with-editor-looping-editor) args)
+        (push (concat with-editor--envvar "=" with-editor-sleeping-editor) args)
         (ad-set-arg  2 prog)
         (ad-set-args 3 args)))
     (let ((process ad-do-it))
@@ -444,6 +450,8 @@ which may or may not insert the text into the PROCESS' buffer."
           (,filter proc str)
           (with-editor-process-filter proc str t))
      filter)))
+
+(defvar with-editor-filter-visit-hook nil)
 
 (defun with-editor-output-filter (string)
   (save-match-data
@@ -494,7 +502,7 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
       (goto-char (process-mark process))
       (process-send-string
        process (format "export %s=%s\n" envvar
-                       (shell-quote-argument with-editor-looping-editor)))
+                       (shell-quote-argument with-editor-sleeping-editor)))
       (while (accept-process-output process 0.1))
       (set-process-filter process filter)
       (if (derived-mode-p 'term-mode)
@@ -504,7 +512,7 @@ This works in `shell-mode', `term-mode' and `eshell-mode'."
    ((derived-mode-p 'eshell-mode)
     (add-to-list 'eshell-preoutput-filter-functions
                  'with-editor-output-filter)
-    (setenv envvar with-editor-looping-editor))
+    (setenv envvar with-editor-sleeping-editor))
    (t
     (error "Cannot export environment variables in this buffer")))
   (message "Successfully exported %s" envvar))
@@ -589,7 +597,7 @@ else like the former."
 (defun with-editor-shell-command-read-args (prompt &optional async)
   (let ((command (read-shell-command
                   prompt nil nil
-                  (--when-let (or (buffer-file-name)
+                  (--when-let (or buffer-file-name
                                   (and (eq major-mode 'dired-mode)
                                        (dired-get-filename nil t)))
                     (file-relative-name it)))))
@@ -611,7 +619,7 @@ else like the former."
          (ad-set-arg
           0 (format "%s=%s %s"
                     (or with-editor--envvar "EDITOR")
-                    (shell-quote-argument with-editor-looping-editor)
+                    (shell-quote-argument with-editor-sleeping-editor)
                     (ad-get-arg 0)))
          (let ((process ad-do-it))
            (set-process-filter

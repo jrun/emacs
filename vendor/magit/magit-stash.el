@@ -1,10 +1,9 @@
 ;;; magit-stash.el --- stash support for Magit
 
-;; Copyright (C) 2008-2015  The Magit Project Developers
+;; Copyright (C) 2008-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -49,7 +48,7 @@
               (?W "Snapshot worktree"  magit-snapshot-worktree)
               (?l "List"               magit-stash-list)
               (?x "Save keeping index" magit-stash-keep-index)
-              (?r "Snapshot to wipref" magit-wip-save)
+              (?r "Snapshot to wipref" magit-wip-commit)
               (?v "Show"               magit-stash-show)
               (?b "Branch"             magit-stash-branch)
               (?k "Drop"               magit-stash-drop))
@@ -191,8 +190,8 @@ When the region is active offer to drop all contained stashes."
 ;;;###autoload
 (defun magit-stash-branch (stash branch)
   "Create and checkout a new BRANCH from STASH."
-  (interactive (list (magit-read-stash  "Branch stash" t)
-                     (magit-read-string "Branch name")))
+  (interactive (list (magit-read-stash "Branch stash" t)
+                     (magit-read-string-ns "Branch name")))
   (magit-run-git "stash" "branch" branch stash))
 
 ;;; Plumbing
@@ -352,24 +351,24 @@ The following `format'-like specs are supported:
   :type 'string)
 
 ;;;###autoload
-(defun magit-stash-show (stash &optional noselect args)
+(defun magit-stash-show (stash &optional noselect args files)
   "Show all diffs of a stash in a buffer."
   (interactive (nconc (list (or (and (not current-prefix-arg)
                                      (magit-stash-at-point))
                                 (magit-read-stash "Show stash"))
                             nil)
-                      (magit-diff-read-args t)))
+                      (delete "--stat" (magit-diff-arguments))))
   (magit-mode-setup magit-stash-buffer-name-format
                     (if noselect 'display-buffer 'pop-to-buffer)
                     #'magit-stash-mode
-                    #'magit-stash-refresh-buffer stash args))
+                    #'magit-stash-refresh-buffer stash nil args files))
 
 (define-derived-mode magit-stash-mode magit-diff-mode "Magit Stash"
   "Mode for looking at individual stashes."
   :group 'magit
   (hack-dir-local-variables-non-file-buffer))
 
-(defun magit-stash-refresh-buffer (stash args)
+(defun magit-stash-refresh-buffer (stash _const args files)
   (magit-insert-section (stash)
     (run-hooks 'magit-stash-sections-hook)))
 
@@ -382,11 +381,12 @@ The following `format'-like specs are supported:
                (magit-rev-format "%s" stash) "\n")))))
 
 (defmacro magit-stash-insert-section (subtype format &optional files)
+  (declare (debug (sexp form &optional form)))
   `(let ((stash (car magit-refresh-args)))
      (magit-insert-section (,(intern (format "stashed-%s" subtype)))
        (magit-insert-heading (format "%s %s:" (capitalize stash) ',subtype))
        (magit-git-wash #'magit-diff-wash-diffs
-         "diff" (cdr magit-refresh-args) "--no-prefix"
+         "diff" (cdr magit-refresh-args) "--no-prefix" "-u"
          (format ,format stash stash) "--" ,files))))
 
 (defun magit-insert-stash-index ()

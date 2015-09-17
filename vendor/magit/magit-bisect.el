@@ -1,10 +1,9 @@
 ;;; magit-bisect.el --- bisect support for Magit
 
-;; Copyright (C) 2011-2015  The Magit Project Developers
+;; Copyright (C) 2011-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -31,20 +30,17 @@
 (require 'magit)
 
 (defface magit-bisect-good
-  '((t :background "LightGreen"
-       :foreground "DarkOliveGreen"))
+  '((t :foreground "DarkOliveGreen"))
   "Face for good bisect revisions."
   :group 'magit-faces)
 
 (defface magit-bisect-skip
-  '((t :background "LightGoldenrod"
-       :foreground "DarkGoldenrod"))
+  '((t :foreground "DarkGoldenrod"))
   "Face for skipped bisect revisions."
   :group 'magit-faces)
 
 (defface magit-bisect-bad
-  '((t :background "IndianRed1"
-       :foreground "IndianRed4"))
+  '((t :foreground "IndianRed4"))
   "Face for bad bisect revisions."
   :group 'magit-faces)
 
@@ -162,7 +158,8 @@ to test.  This command lets Git choose a different one."
   (when (magit-bisect-in-progress-p)
     (magit-insert-section (bisect-log)
       (magit-insert-heading "Bisect Log:")
-      (magit-git-wash #'magit-wash-bisect-log "bisect" "log"))))
+      (magit-git-wash #'magit-wash-bisect-log "bisect" "log")
+      (insert ?\n))))
 
 (defun magit-wash-bisect-log (args)
   (let (beg)
@@ -173,8 +170,10 @@ to test.  This command lets Git choose a different one."
         (save-restriction
           (narrow-to-region beg (point))
           (goto-char (point-min))
-          (magit-insert-section (bisect-log nil t)
-            (magit-insert-heading heading)
+          (magit-insert-section (bisect-log heading t)
+            (magit-insert (propertize heading 'face
+                                      'magit-section-secondary-heading))
+            (magit-insert-heading)
             (magit-wash-sequence
              (apply-partially 'magit-log-wash-line 'bisect-log
                               (magit-abbrev-length)))

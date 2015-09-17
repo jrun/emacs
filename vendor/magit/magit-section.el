@@ -1,10 +1,9 @@
 ;;; magit-section.el --- section functionality
 
-;; Copyright (C) 2010-2015  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
@@ -35,13 +34,15 @@
 
 (require 'magit-utils)
 
+(defvar magit-keep-region-overlay)
+
 ;;; Options
 
 (defgroup magit-section nil
   "Expandable sections."
   :group 'magit)
 
-(defcustom magit-section-show-child-count nil
+(defcustom magit-section-show-child-count t
   "Whether to append the number of childen to section headings."
   :package-version '(magit . "2.1.0")
   :group 'magit-section
@@ -92,9 +93,13 @@ section specific default (see `magit-insert-section')."
   :group 'magit-faces)
 
 (defface magit-section-heading
-  '((((class color) (background light)) :background "grey80" :weight bold)
-    (((class color) (background  dark)) :background "grey25" :weight bold))
+  '((((class color) (background light)) :foreground "DarkGoldenrod4" :weight bold)
+    (((class color) (background  dark)) :foreground "LightGoldenrod2" :weight bold))
   "Face for section headings."
+  :group 'magit-faces)
+
+(defface magit-section-secondary-heading '((t :weight bold))
+  "Face for section headings of some secondary headings."
   :group 'magit-faces)
 
 (defface magit-section-heading-selection
@@ -107,7 +112,7 @@ section specific default (see `magit-insert-section')."
 
 (cl-defstruct magit-section
   type value start content end hidden washer refined
-  source blobs process parent children)
+  source diff-header process parent children)
 
 (defvar-local magit-root-section nil
   "The root section in the current buffer.
@@ -401,23 +406,28 @@ hidden."
   (interactive)
   (-when-let (sections
               (cond ((derived-mode-p 'magit-status-mode)
-                     (and (magit-get-section '((staged)   (status)))
-                          (magit-get-section '((unstaged) (status)))))
+                     (--mapcat
+                      (when it
+                        (when (magit-section-hidden it)
+                          (magit-section-show it))
+                        (magit-section-children it))
+                      (list (magit-get-section '((staged)   (status)))
+                            (magit-get-section '((unstaged) (status))))))
                     ((derived-mode-p 'magit-diff-mode)
                      (--filter (eq (magit-section-type it) 'file)
                                (magit-section-children magit-root-section)))))
-      (if (-any? 'magit-section-hidden sections)
-          (dolist (s sections)
-            (magit-section-show s)
-            (magit-section-hide-children s))
-        (let ((children (cl-mapcan 'magit-section-children sections)))
-          (cond ((and (-any? 'magit-section-hidden   children)
-                      (-any? 'magit-section-children children))
-                 (mapc 'magit-section-show-headings sections))
-                ((-any? 'magit-section-hidden-body children)
-                 (mapc 'magit-section-show-children sections))
-                (t
-                 (mapc 'magit-section-hide sections)))))))
+    (if (-any? 'magit-section-hidden sections)
+        (dolist (s sections)
+          (magit-section-show s)
+          (magit-section-hide-children s))
+      (let ((children (cl-mapcan 'magit-section-children sections)))
+        (cond ((and (-any? 'magit-section-hidden   children)
+                    (-any? 'magit-section-children children))
+               (mapc 'magit-section-show-headings sections))
+              ((-any? 'magit-section-hidden-body children)
+               (mapc 'magit-section-show-children sections))
+              (t
+               (mapc 'magit-section-hide sections)))))))
 
 (defun magit-section-hidden-body (section &optional pred)
   (--if-let (magit-section-children section)
@@ -894,13 +904,20 @@ invisible."
     t))
 
 (defun magit-section-make-overlay (start end face)
+  ;; Yes, this doesn't belong here.  But the alternative of
+  ;; spreading this hack across the code base is even worse.
+  (when (and magit-keep-region-overlay
+             (memq face '(magit-section-heading-selection
+                          magit-diff-file-heading-selection
+                          magit-diff-hunk-heading-selection)))
+    (setq face (list :foreground (face-foreground face))))
   (let ((ov (make-overlay start end nil t)))
     (overlay-put ov 'face face)
     (overlay-put ov 'evaporate t)
     (push ov magit-section-highlight-overlays)
     ov))
 
-(defun magit-section-goto-successor (section line char)
+(defun magit-section-goto-successor (section line char arg)
   (let ((ident (magit-section-ident section)))
     (--if-let (magit-get-section ident)
         (let ((start (magit-section-start it)))
@@ -911,19 +928,30 @@ invisible."
               (forward-char char))
             (unless (eq (magit-current-section) it)
               (goto-char start))))
-      (goto-char (--if-let (magit-section-goto-successor-1 section)
-                     (magit-section-start it)
-                   (point-min))))))
+      (or (and arg
+               (-when-let (parent (magit-get-section
+                                   (magit-section-ident
+                                    (magit-section-parent section))))
+                 (let ((children (magit-section-children parent))
+                       (siblings (magit-section-siblings section 'prev)))
+                   (--when-let (nth (length siblings) children)
+                     (goto-char (magit-section-start it)))
+                   (if (and (stringp arg)
+                            (re-search-forward arg (magit-section-end parent) t))
+                       (goto-char (match-beginning 0))
+                     (goto-char (magit-section-end (car (last children))))
+                     (forward-line -1)
+                     (while (looking-at "^ ")    (forward-line -1))
+                     (while (looking-at "^[-+]") (forward-line -1))
+                     (forward-line)))))
+          (goto-char (--if-let (magit-section-goto-successor-1 section)
+                         (if (eq (magit-section-type it) 'button)
+                             (point-min)
+                           (magit-section-start it))
+                       (point-min)))))))
 
 (defun magit-section-goto-successor-1 (section)
-  (or (--when-let (and (eq (magit-section-type section) 'hunk)
-                       (magit-get-section
-                        (magit-section-ident
-                         (magit-section-parent section))))
-        (let ((children (magit-section-children it)))
-          (or (nth (length (magit-section-siblings section 'prev)) children)
-              (car (last children)))))
-      (--when-let (pcase (magit-section-type section)
+  (or (--when-let (pcase (magit-section-type section)
                     (`staged 'unstaged)
                     (`unstaged 'staged)
                     (`unpushed 'unpulled)
@@ -1061,7 +1089,8 @@ sections at point, moving point forward.  FUNCTION may choose not
 to insert its section(s), when doing so would not make sense.  It
 should not be abused for other side-effects.  To remove FUNCTION
 again use `remove-hook'."
-  (or (boundp hook) (set hook nil))
+  (unless (boundp hook)
+    (error "Cannot add function to undefined hook variable %s" hook))
   (or (default-boundp hook) (set-default hook nil))
   (let ((value (if local
                    (if (local-variable-p hook)

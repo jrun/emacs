@@ -1,16 +1,12 @@
-;;; git-rebase.el --- Major mode for editing Git rebase files
+;;; git-rebase.el --- Edit Git rebase files
 
-;; Copyright (C) 2010-2015  The Magit Project Developers
+;; Copyright (C) 2010-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Author: Phil Jackson <phil@shellarchive.co.uk>
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
-
-;; Homepage: https://github.com/magit/magit
-;; Keywords: convenience vc git
 
 ;; This file is not part of GNU Emacs.
 
@@ -32,7 +28,7 @@
 ;; This package assists the user in editing the list of commits to be
 ;; rewritten during an interactive rebase.
 
-;; When the user initiates an interactive rebase, e.g. using "e e" in
+;; When the user initiates an interactive rebase, e.g. using "r e" in
 ;; a Magit buffer or on the command line using "git rebase -i REV",
 ;; Git invokes the `$GIT_SEQUENCE_EDITOR' (or if that is undefined
 ;; `$GIT_EDITOR' or even `$EDITOR') letting the user rearrange, drop,
@@ -87,9 +83,8 @@
   :group 'git-rebase
   :type 'boolean)
 
-(defcustom git-rebase-remove-instructions nil
-  "Whether to remove the instructions from the rebase buffer.
-Because you have seen them before and can still remember."
+(defcustom git-rebase-show-instructions t
+  "Whether to show usage instructions inside the rebase buffer."
   :group 'git-rebase
   :type 'boolean)
 
@@ -120,21 +115,19 @@ Because you have seen them before and can still remember."
   "Face for commented action and exec lines."
   :group 'git-rebase-faces)
 
-(define-obsolete-face-alias 'git-rebase-description-face
-  'git-rebase-description "1.0.0")
-(define-obsolete-face-alias 'git-rebase-killed-action-face
-  'git-rebase-killed-action "1.0.0")
-
 ;;; Keymaps
 
 (defvar git-rebase-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map special-mode-map)
+    (define-key map (kbd "q")    'undefined)
     (define-key map [remap undo] 'git-rebase-undo)
     (define-key map (kbd "RET") 'git-rebase-show-commit)
+    (define-key map (kbd "SPC") 'magit-diff-show-or-scroll-up)
     (define-key map (kbd "x")   'git-rebase-exec)
     (define-key map (kbd "c")   'git-rebase-pick)
     (define-key map (kbd "r")   'git-rebase-reword)
+    (define-key map (kbd "w")   'git-rebase-reword)
     (define-key map (kbd "e")   'git-rebase-edit)
     (define-key map (kbd "s")   'git-rebase-squash)
     (define-key map (kbd "f")   'git-rebase-fixup)
@@ -151,6 +144,8 @@ Because you have seen them before and can still remember."
     map)
   "Keymap for Git-Rebase mode.")
 
+(put 'git-rebase-reword :advertised-binding "r")
+
 (easy-menu-define git-rebase-mode-menu git-rebase-mode-map
   "Git-Rebase mode menu"
   '("Rebase"
@@ -166,6 +161,17 @@ Because you have seen them before and can still remember."
     "---"
     ["Cancel" with-editor-cancel t]
     ["Finish" with-editor-finish t]))
+
+(defvar git-rebase-command-descriptions
+  '((with-editor-finish        . "tell Git to make it happen")
+    (with-editor-cancel        . "tell Git that you changed your mind, i.e. abort")
+    (previous-line             . "move point to previous line")
+    (next-line                 . "move point to next line")
+    (git-rebase-move-line-up   . "move the commit at point up")
+    (git-rebase-move-line-down . "move the commit at point down")
+    (git-rebase-show-commit    . "show the commit at point in another buffer")
+    (undo                      . "undo last change")
+    (git-rebase-kill-line      . "drop the commit at point")))
 
 ;;; Commands
 
@@ -295,7 +301,7 @@ Like `undo' but works in read-only buffers."
     (goto-char (line-beginning-position))
     (--if-let (and (looking-at git-rebase-line)
                    (match-string 2))
-        (magit-show-commit it)
+        (apply #'magit-show-commit it nil nil (magit-diff-arguments))
       (ding))))
 
 (defun git-rebase-backward-line (&optional n)
@@ -315,7 +321,7 @@ Rebase files are generated when you run 'git rebase -i' or run
 the rebase.  See the documentation for git-rebase (e.g., by
 running 'man git-rebase' at the command line) for details."
   (setq font-lock-defaults '(git-rebase-mode-font-lock-keywords t t))
-  (when git-rebase-remove-instructions
+  (unless git-rebase-show-instructions
     (let ((inhibit-read-only t))
       (flush-lines "^\\($\\|#\\)")))
   (with-editor-mode 1)
@@ -356,24 +362,22 @@ By default, this is the same except for the \"pick\" command."
   (let ((inhibit-read-only t))
     (save-excursion
       (goto-char (point-min))
-      (when (re-search-forward "^# Commands:\n" nil t)
-        (insert "# C-c C-c  tell Git to make it happen\n")
-        (insert "# C-c C-k  tell Git that you changed your mind, i.e. abort\n")
-        (insert "# p        move point to previous line\n")
-        (insert "# n        move point to next line\n")
-        (insert "# M-p      move the commit at point up\n")
-        (insert "# M-n      move the commit at point down\n")
-        (insert "# RET      show the commit at point in another buffer\n")
-        (insert "# C-/      undo last change\n")
-        (insert "# k        drop the commit at point\n")
-        (while (re-search-forward
-                "^#\\(  ?\\)\\([^,]\\)\\(,\\) \\([^ ]+\\) = " nil t)
-          (replace-match " "       t t nil 1)
-          (replace-match "       " t t nil 3)
-          (let* ((cmd (intern (concat "git-rebase-" (match-string 4))))
-                 (key (where-is-internal cmd nil t)))
-            (when (and (fboundp cmd) key) ; see #1875
-              (replace-match (key-description key) t t nil 2))))))))
+      (when (and git-rebase-show-instructions
+                 (re-search-forward "^# Commands:\n" nil t))
+        (--each git-rebase-command-descriptions
+          (insert (format "# %-8s %s\n"
+                          (substitute-command-keys (format "\\[%s]" (car it)))
+                          (cdr it))))
+        (while (re-search-forward "^#\\(  ?\\)\\([^,],\\) \\([^ ]+\\) = " nil t)
+          (replace-match " " t t nil 1)
+          (let ((cmd (intern (concat "git-rebase-" (match-string 3)))))
+            (replace-match
+             (format "%-8s"
+                     (mapconcat #'key-description
+                                (--filter (not (eq (elt it 0) 'menu-bar))
+                                          (reverse (where-is-internal cmd)))
+                                ", "))
+             t t nil 2)))))))
 
 (add-hook 'git-rebase-mode-hook 'git-rebase-mode-show-keybindings t)
 

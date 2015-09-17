@@ -1,10 +1,9 @@
 ;;; magit-extras.el --- additional functionality for Magit
 
-;; Copyright (C) 2008-2015  The Magit Project Developers
+;; Copyright (C) 2008-2015  The Magit Project Contributors
 ;;
-;; For a full list of contributors, see the AUTHORS.md file
-;; at the top-level directory of this distribution and at
-;; https://raw.github.com/magit/magit/master/AUTHORS.md
+;; You should have received a copy of the AUTHORS.md file which
+;; lists all contributors.  If not, see http://magit.vc/authors.
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -62,28 +61,37 @@ blame to center around the line point is on."
    (let (revision filename)
      (when (or current-prefix-arg
                (not (setq revision "HEAD"
-                          filename (magit-file-relative-name))))
+                          filename (magit-file-relative-name nil 'tracked))))
        (setq revision (magit-read-branch-or-commit "Blame from revision")
              filename (magit-read-file-from-rev revision "Blame file")))
      (list revision filename
            (and (equal filename
                        (ignore-errors
-                         (magit-file-relative-name (buffer-file-name))))
+                         (magit-file-relative-name buffer-file-name)))
                 (line-number-at-pos)))))
-  (let ((default-directory (magit-toplevel)))
+  (magit-with-toplevel
     (apply #'call-process magit-git-executable nil 0 nil "gui" "blame"
            `(,@(and linenum (list (format "--line=%d" linenum)))
              ,commit
              ,filename))))
 
 ;;;###autoload
-(defun magit-run-gitk (arg)
-  "Run Gitk for the current git repository.
-Without a prefix argument run `gitk --all', with
-a prefix argument run gitk without any arguments."
-  (interactive "P")
-  (apply #'call-process magit-gitk-executable nil 0 nil
-         (if arg nil (list "--all"))))
+(defun magit-run-gitk ()
+  "Run `gitk' in the current repository."
+  (interactive)
+  (call-process magit-gitk-executable nil 0))
+
+;;;###autoload
+(defun magit-run-gitk-branches ()
+  "Run `gitk --branches' in the current repository."
+  (interactive)
+  (call-process magit-gitk-executable nil 0 nil "--branches"))
+
+;;;###autoload
+(defun magit-run-gitk-all ()
+  "Run `gitk --all' in the current repository."
+  (interactive)
+  (call-process magit-gitk-executable nil 0 nil "--all"))
 
 ;;; Clean
 
