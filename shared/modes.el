@@ -29,7 +29,9 @@
   (package-install 'redis))
 
 ;; toggle
-(vendor 'toggle)
+(unless (package-installed-p 'toggle)
+  (package-install 'toggle))
+
 (global-set-key (kbd "C-x C-t") 'toggle-buffer)
 
 ;; paredit
