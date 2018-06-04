@@ -1,8 +1,8 @@
-(add-to-list 'load-path (concat emacsd "vendor/async"))
-(add-to-list 'load-path (concat emacsd "vendor/helm"))
+(unless (package-installed-p 'helm)
+  (package-install 'helm))
 
-(require 'helm-config)
-(require 'helm-ag)
+(unless (package-installed-p 'helm-ag)
+  (package-install 'helm-ag))
 
 (helm-mode 1)
 (helm-autoresize-mode nil)
