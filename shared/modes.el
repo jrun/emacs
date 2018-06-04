@@ -63,10 +63,6 @@
 (require 'scss-mode)
 (add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
 
-;; coffee
-(require 'coffee-mode)
-(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
-
 ;; activate rainbows
 (require 'rainbow-mode)
 (add-hook 'css-mode-hook
