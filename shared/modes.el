@@ -13,9 +13,6 @@
 (load "shared/sgml")
 (load "shared/erlang")
 
-
-(vendor 'redis-cli)
-
 (require 'mouse)
 (xterm-mouse-mode t)
 (defun track-mouse (e))
@@ -27,6 +24,10 @@
   '(progn
      (set-face-foreground 'diff-added "green4")
      (set-face-foreground 'diff-removed "red3")))
+
+; redis
+(unless (package-installed-p 'redis)
+  (package-install 'redis))
 
 ;; toggle
 (vendor 'toggle)
