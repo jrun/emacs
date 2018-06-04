@@ -1,4 +1,3 @@
-(vendor 'cheat)
 (vendor 'jump)
 (vendor 'json)
 
