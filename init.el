@@ -29,8 +29,13 @@
 (load "shared/defuns")
 (load "shared/global")
 
+;; themes
 (add-to-list 'custom-theme-load-path (concat emacsd "themes"))
-(load-theme 'jtb t)
+
+(unless (package-installed-p 'gruvbox-theme)
+  (package-install 'gruvbox-theme))
+
+(load-theme 'gruvbox-dark-hard t)
 
 ;; shell
 (setq explicit-shell-file-name "/usr/local/bin/zsh")
