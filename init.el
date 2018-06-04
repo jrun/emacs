@@ -3,6 +3,15 @@
 (add-to-list 'load-path emacsd)
 (add-to-list 'load-path (concat emacsd "vendor"))
 
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
 (push "/usr/local/bin" exec-path)
 (push (concat (substring (shell-command-to-string "rbenv root") 0 -1) "/bin") exec-path)
 
