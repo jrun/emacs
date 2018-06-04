@@ -1,7 +1,11 @@
-(add-to-list 'load-path (concat emacsd "vendor/enhanced-ruby-mode"))
+; https://github.com/nonsequitur/inf-ruby
+(unless (package-installed-p 'inf-ruby)
+  (package-install 'inf-ruby))
 
-;; doesn't seem to work with ruby 2.0
-;;(setq enh-ruby-program "~/.rbenv/versions/ruby-2.1.4/bin/ruby")
+; https://github.com/zenspider/enhanced-ruby-mode
+(unless (package-installed-p 'enh-ruby-mode)
+  (package-install 'enh-ruby-mode))
+
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
 
