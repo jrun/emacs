@@ -24,7 +24,7 @@
      (set-face-foreground 'diff-added "green4")
      (set-face-foreground 'diff-removed "red3")))
 
-; redis
+;; redis
 (unless (package-installed-p 'redis)
   (package-install 'redis))
 
