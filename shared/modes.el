@@ -64,8 +64,10 @@
 (require 'scss-mode)
 (add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
 
-;; activate rainbows
-(require 'rainbow-mode)
+;; rainbow mode
+(unless (package-installed-p 'rainbow-mode)
+  (package-install 'rainbow-mode))
+
 (add-hook 'css-mode-hook
           '(lambda ()
              (rainbow-mode 1)))
