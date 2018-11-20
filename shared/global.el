@@ -7,6 +7,8 @@
 (setq-default indent-tabs-mode nil)
 (setq-default truncate-lines t)
 
+;; suppress annoying prompts
+(setq-default confirm-kill-processes nil)
 ;;
 ;; Choosing a Window:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Choosing-Window.html
@@ -51,3 +53,8 @@
 (setq uniquify-separator "|")
 (setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+; Use shift arrow keys to navigate windows.
+(windmove-default-keybindings)
+
+(global-set-key (kbd "C-c r") 'replace-string)

@@ -7,19 +7,6 @@
 (define-key global-map (kbd "C-+") 'text-scale-increase)
 (define-key global-map (kbd "C--") 'text-scale-decrease)
 
-;; File finding
-;;(global-set-key (kbd "C-x f") 'recentf-ido-find-file)
-
-;; Window switching using shift arrows
-;;
-;; When running emacs in tmux set the following in .tmux.conf
-;;     set-window-option -g xterm-keys on
-;;
-(global-set-key "\M-[1;2A" 'windmove-up)
-(global-set-key "\M-[1;2B" 'windmove-down)
-(global-set-key "\M-[1;2C" 'windmove-right)
-(global-set-key "\M-[1;2D" 'windmove-left)
-
 ;; Help should search more than just commands
 (global-set-key (kbd "C-h a") 'apropos)
 

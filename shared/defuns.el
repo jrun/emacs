@@ -21,3 +21,12 @@
   (interactive)
   (shell-command (concat "touch " (shell-quote-argument (buffer-file-name))))
   (clear-visited-file-modtime))
+
+(defun new-buffer-frame ()
+  "Create a new frame with a new empty buffer."
+  (interactive)
+  (let ((buffer (generate-new-buffer "untitled")))
+    (set-buffer-major-mode buffer)
+    (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
+
+(global-set-key (kbd "C-c n") #'new-buffer-frame)
