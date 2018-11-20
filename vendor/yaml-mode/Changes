@@ -1,3 +1,27 @@
+0.0.13 Fri Nov 4 22:23:34 CET 2016
+	* Derive from text-mode, adjustments to major mode definition (wasamasa)
+	* Inclusion of longstanding PRs (wasamasa)
+	* Improved comment highlighting (wasamasa)
+	* Add *.raml to auto-mode-alist (Ville Skyttä)
+	* Map both DEL and <backspace> to electric backspace (forcer)
+	* Change dashes from word to symbol syntax (forcer)
+0.0.12 Mon Aug 17 05:34:37 UTC 2015
+        * Enable encrypted yamls. (rhoml)
+        * Use font-lock-flush when available. (tarsius)
+        * Improve paragraph filling of block literals. (wentasah)
+0.0.11 Tue Nov 25 08:35:56 GMT 2014
+        * Fix incorrect highlighting of colons in comments. (Wilfred)
+0.0.10 Mon Aug 25 04:06:50 GMT 2014
+        * Remove default C-j binding. (barrkel)
+0.0.9  Mon Mar 11 12:43:23 2013
+        * Fix anchor name can contain '_'. (Monson Shao)
+        * `checkdoc' nits (including the `checkdoc-autoload' extension).
+          (Samuel Bronson)
+        * Enable yaml-mode for *.yaml files. (Georgi Valkov)
+0.0.8  Tue Feb 28 13:06:42 2012
+        * Replaced `last-command-char` to `last-command-event` (sugyan)
+        * Ignore *.elc in .gitignore (semperos)
+        * Added autoload comments. (arthuraa)
 0.0.7  Thu Aug 5 14:35:14 2010 JST
        	* Fixed bug for 5th level's indentation becomes TAB character.
           See YAML spec 1.2 section 5.5. White Space Characters (ochko)

@@ -22,8 +22,10 @@
 
 (add-to-list 'completion-ignored-extensions ".rbc")
 
-; inferior
-(autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
-(autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
-(eval-after-load 'enh-ruby-mode
-  '(add-hook 'enh-ruby-mode-hook 'inf-ruby-setup-keybindings))
+;; inferior
+;; (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
+;; (autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
+;; (eval-after-load 'enh-ruby-mode
+;;   '(add-hook 'enh-ruby-mode-hook 'inf-ruby-setup-keybindings))
+
+(add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
