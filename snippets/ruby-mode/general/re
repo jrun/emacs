@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : refute_equal
+# key: re
+# --
+refute_equal $1, $2
+$0

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : refute_nil
+# key: rn
+# --
+refute_nil $1
+$0

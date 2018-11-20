@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : assert_nil
+# key: an
+# --
+assert_nil $1
+$0
