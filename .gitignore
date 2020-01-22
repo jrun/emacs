@@ -1,5 +1,5 @@
 loaddefs.el*
-backups/*
+backup
 auto-save-list
 custom.el
 *.elc
