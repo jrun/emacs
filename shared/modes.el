@@ -61,7 +61,11 @@
 ;;           '(lambda ()
 ;;              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-(require 'mmm-auto)
+;; mmm-mode
+(unless (package-installed-p 'inf-ruby)
+  (package-install 'inf-ruby))
+
+;; (require 'mmm-auto)
 (setq mmm-global-mode 'maybe)
 
 ;; mmm-jinja
