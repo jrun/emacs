@@ -1,8 +1,8 @@
-; https://github.com/nonsequitur/inf-ruby
+;; https://github.com/nonsequitur/inf-ruby
 (unless (package-installed-p 'inf-ruby)
   (package-install 'inf-ruby))
 
-; https://github.com/zenspider/enhanced-ruby-mode
+;; https://github.com/zenspider/enhanced-ruby-mode
 (unless (package-installed-p 'enh-ruby-mode)
   (package-install 'enh-ruby-mode))
 
@@ -29,3 +29,53 @@
 ;;   '(add-hook 'enh-ruby-mode-hook 'inf-ruby-setup-keybindings))
 
 (add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
+
+
+;; rubocopfmt
+;; ==========
+
+(unless (package-installed-p 'rubocopfmt)
+  (package-install 'rubocopfmt))
+
+(setq rubocopfmt-use-bundler-when-possible nil)
+
+(add-hook 'enh-ruby-mode-hook #'rubocopfmt-mode)
+
+
+;; rubocop
+;; =======
+
+(unless (package-installed-p 'rubocop)
+  (package-install 'rubocop))
+
+(add-hook 'enh-ruby-mode-hook #'rubocop-mode)
+
+
+;; projectile
+;; ==========
+
+(unless (package-installed-p 'projectile-rails)
+  (package-install 'projectile-rails))
+
+(add-hook 'projectile-mode-hook 'projectile-rails-on)
+(projectile-global-mode)
+
+(with-eval-after-load 'projectile-rails
+  (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map))
+
+
+;; Robe
+;; ====
+;; https://github.com/dgutov/robe
+(unless (package-installed-p 'robe)
+  (package-install 'robe))
+
+(add-hook 'enh-ruby-mode-hook 'robe-mode)
+
+(custom-set-variables
+ '(robe-completing-read-func 'helm-robe-completing-read))
+
+;;(add-hook 'after-init-hook 'global-company-mode)
+
+(global-company-mode t)
+(push 'company-robe company-backends)
