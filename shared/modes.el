@@ -1,6 +1,7 @@
 (vendor 'jump)
 (vendor 'json)
 
+(load "shared/flycheck")
 (load "shared/desktop")
 (load "shared/git")
 (load "shared/ag")
