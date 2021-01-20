@@ -1,8 +1,15 @@
+;; https://elixirforum.com/t/emacs-elixir-setup-configuration-wiki/19196
+
 (unless (package-installed-p 'elixir-mode)
   (package-install 'elixir-mode))
 
-(unless (package-installed-p 'alchemist)
-  (package-install 'alchemist))
+(unless (package-installed-p 'exunit)
+  (package-install 'exunit))
 
-; http://alchemist.readthedocs.io/en/latest/configuration/
-(setq alchemist-mix-command "/usr/local/bin/mix")
+
+(unless (package-installed-p 'mix)
+  (package-install 'mix))
+
+
+(add-hook 'elixir-mode-hook
+          (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
