@@ -116,3 +116,10 @@
 (add-hook 'enh-ruby-mode-hook
           (lambda () (highlight-indentation-current-column-mode)))
 
+;; systemd
+
+(unless (package-installed-p 'systemd)
+  (package-install 'systemd))
+
+(add-to-list 'auto-mode-alist '("\\.service.j2$" . systemd-mode))
+(add-to-list 'auto-mode-alist '("\\.timer.j2$" . systemd-mode))
