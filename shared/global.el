@@ -57,4 +57,18 @@
 ; Use shift arrow keys to navigate windows.
 (windmove-default-keybindings)
 
-(global-set-key (kbd "C-c r") 'replace-string)
+(global-set-key (kbd "C-c s r") 'replace-string)
+
+(setq tramp-default-method "ssh")
+
+;; Wow, is the bell sound annoying.
+(setq ring-bell-function 'ignore)
+
+;; Sanity
+(setq mac-option-modifier 'meta)
+
+;; Ensure $PATH is correct.
+(exec-path-from-shell-initialize)
+
+;; Don't create .# files in the current directory.
+(setq create-lockfiles nil)
