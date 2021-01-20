@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : require application_test_case
+# key: reqatc
+# --
+require 'application_test_case'
+
+$0

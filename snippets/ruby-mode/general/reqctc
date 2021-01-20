@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : require capybara_integration_test_case
+# key: reqctc
+# --
+require 'capybara_integration_test_case'
+
+$0

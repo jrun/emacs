@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name : assert_ok_current_path
+# key: aok
+# --
+assert_ok_current_path $1
+$0

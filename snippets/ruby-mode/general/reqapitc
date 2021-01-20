@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : require api_integration_test_case
+# key: reqapitc
+# --
+require 'api_integration_test_case'
+
+$0

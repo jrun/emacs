@@ -1,11 +1,11 @@
 # -*- mode: snippet -*-
-# name : Capybara Integration Test
-# key: captc
+# name : Application Command
+# key: cmd
 # --
 class `(let ((fn (capitalize (file-name-nondirectory
                  (file-name-sans-extension
           				 (or (buffer-file-name)
 			        	     (buffer-name (current-buffer))))))))
-                (replace-regexp-in-string "_" ""  fn))` < CapybaraIntegrationTestCase
+                (replace-regexp-in-string "_" ""  fn))` < ApplicationCommand
   $0
 end

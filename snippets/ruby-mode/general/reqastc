@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name : require application_system_test_case
+# key: reqastc
+# --
+require 'application_system_test_case'
+
+$0
