@@ -116,7 +116,3 @@
 (add-hook 'enh-ruby-mode-hook
           (lambda () (highlight-indentation-current-column-mode)))
 
-;; dash support
-(autoload 'dash-at-point "dash-at-point"
-  "Search the word at point with Dash." t nil)
-(global-set-key "\C-cd" 'dash-at-point)
