@@ -13,6 +13,7 @@
 (load "shared/markdown")
 (load "shared/sgml")
 (load "shared/erlang")
+(load "shared/yaml")
 
 (require 'mouse)
 (xterm-mouse-mode t)
@@ -69,11 +70,6 @@
 ;; (require 'mmm-auto)
 (setq mmm-global-mode 'maybe)
 
-;; mmm-jinja
-(require 'mmm-jinja2)
-(add-to-list 'auto-mode-alist '("\\.yml.jinja\\'" . yaml-mode))
-(mmm-add-mode-ext-class 'yaml-mode "\\.yml.jinja\\'" 'jinja2)
-(mmm-add-mode-ext-class 'yaml-mode "\\.yml\\'" 'jinja2)
 
 ;; sass
 (require 'scss-mode)
