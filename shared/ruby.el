@@ -10,6 +10,7 @@
 (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
 
 (add-to-list 'auto-mode-alist '("\\.gemspec$" . enh-ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.jbuilder$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.ru$" . enh-ruby-mode))
@@ -58,10 +59,19 @@
   (package-install 'projectile-rails))
 
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
+
 (projectile-global-mode)
+(projectile-rails-global-mode)
 
 (with-eval-after-load 'projectile-rails
-  (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map))
+  (define-key projectile-rails-mode-map (kbd "C-c r") 'projectile-rails-command-map)
+  (define-key projectile-rails-mode-map (kbd "s-m")   'projectile-rails-find-model)
+  (define-key projectile-rails-mode-map (kbd "s-c")   'projectile-rails-find-controller)
+  (define-key projectile-rails-mode-map (kbd "s-v")   'projectile-rails-find-view)
+  (define-key projectile-rails-mode-map (kbd "s-t")   'projectile-rails-rake)
+  (define-key projectile-rails-mode-map (kbd "s-c")   'projectile-rails-console)
+  (define-key projectile-rails-mode-map (kbd "s-RET") 'projectile-rails-goto-file-at-point)
+  (define-key projectile-rails-mode-map (kbd "C-c g")  projectile-rails-mode-goto-map))
 
 
 ;; Robe
