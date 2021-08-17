@@ -16,6 +16,8 @@
 
 (global-set-key (kbd "C-M-\\") '(lambda () (interactive)
                                   (indent-region (point-min) (point-max) nil)))
-
-
 (global-set-key "\C-ct" 'touch)
+
+
+
+(setq mac-right-option-modifier 'super)

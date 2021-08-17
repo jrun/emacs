@@ -1,3 +1,6 @@
+(unless (package-installed-p 'lsp-mode)
+  (package-install 'lsp-mode))
+
 (vendor 'jump)
 (vendor 'json)
 
@@ -64,12 +67,12 @@
 ;;              (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 ;; mmm-mode
-(unless (package-installed-p 'inf-ruby)
-  (package-install 'inf-ruby))
+(unless (package-installed-p 'mmm-mode)
+  (package-install 'mmm-mode))
+
 
 ;; (require 'mmm-auto)
 (setq mmm-global-mode 'maybe)
-
 
 ;; sass
 (require 'scss-mode)
@@ -108,6 +111,7 @@
      (add-hook 'sql-interactive-mode-hook 'sql-set-sqli-buffer-generally)))
 
 ;; highlighting
+
 (require 'highlight-indentation)
 (set-face-background 'highlight-indentation-current-column-face "#042D4B")
 (add-hook 'enh-ruby-mode-hook
